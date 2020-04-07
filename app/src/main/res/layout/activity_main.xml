@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <AutoCompleteTextView
+            android:id="@+id/text_view"
+            android:layout_width="329dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_hint" />
+
+        <ImageButton
+            android:id="@+id/btn_speak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/btn_speak"
+            android:src="@drawable/ic_micro" />
+    </LinearLayout>
+
     <Button
-        android:id="@+id/btn_speak"
+        android:id="@+id/btn_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_speak" />
-
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="313dp"
-        android:layout_height="586dp">
-
-    </ListView>
+        android:text="@string/btn_search" />
 
 </LinearLayout>
