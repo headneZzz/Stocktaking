@@ -1,53 +1,47 @@
 package ru.gosarcho.finder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
+import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.speech.RecognizerIntent;
 
-public class MainActivity extends Activity {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+public class MainActivity extends Activity implements AsyncResponse {
+    public List<String> ids;
     public ImageButton speakButton;
     public AutoCompleteTextView textView;
     public Button searchButton;
-    public List<String> numbers;
-
     public static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ConnectTask task = new ConnectTask(this);
+        task.delegate = this;
+        task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_ids");
 
-        numbers = new ArrayList<>();
-        numbers.add("123");
-        numbers.add("26711");
-
+        ids = new ArrayList<>();
         textView = findViewById(R.id.text_view);
         speakButton = findViewById(R.id.btn_speak);
         searchButton = findViewById(R.id.btn_search);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, numbers);
+
+        speakButton.setOnClickListener(v -> speak());
+        searchButton.setOnClickListener(v -> search());
+    }
+
+    @Override
+    public void processFinish(String output) {
+        ids.addAll(Arrays.asList(output.split(",")));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ids);
         textView.setAdapter(adapter);
-        speakButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                speak();
-            }
-        });
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search();
-            }
-        });
     }
 
     public void speak() {
@@ -69,8 +63,9 @@ public class MainActivity extends Activity {
     }
 
     public void search() {
-        if (numbers.contains(textView.getText())) {
-            startActivity(new Intent(getApplicationContext(), ItemActivity.class));
+        String value = textView.getText().toString();
+        if (ids.contains(value)) {
+            startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", value));
             finish();
         }
     }
