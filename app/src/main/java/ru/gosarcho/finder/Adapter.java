@@ -5,15 +5,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
-    private List<String> items;
+    private JSONArray items;
 
-    Adapter(List<String> items) {
+    Adapter(JSONArray items) {
         this.items = items;
     }
 
@@ -26,21 +28,29 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textView.setText(items.get(position));
+        try {
+            JSONObject jsonObject = items.getJSONObject(position);
+            holder.idTextView.setText(jsonObject.optString("id"));
+            holder.nameTextView.setText(jsonObject.optString("name"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items.length();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView idTextView;
+        TextView nameTextView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.text_list_item1);
+            idTextView = itemView.findViewById(R.id.text_list_item1);
+            nameTextView = itemView.findViewById(R.id.text_list_item2);
         }
     }
 }

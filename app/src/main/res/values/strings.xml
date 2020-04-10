@@ -3,4 +3,8 @@
     <string name="btn_speak">Голос</string>
     <string name="btn_search">Найти</string>
     <string name="text_hint">Введите номер предмета</string>
+    <string name="title_activity_login">Регистрация</string>
+    <string name="prompt_username">Фио</string>
+    <string name="prompt_location">Номер кабинета</string>
+    <string name="action_sign_in">Войти</string>
 </resources>
