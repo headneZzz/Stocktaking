@@ -1,9 +1,13 @@
 package ru.gosarcho.finder;
 
-import android.app.Activity;
+
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -14,12 +18,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends Activity implements AsyncResponse {
-    public List<String> ids;
-    public ImageButton speakButton;
-    public AutoCompleteTextView textView;
-    public Button searchButton;
-    public static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+public class MainActivity extends AppCompatActivity implements AsyncResponse {
+    private ImageButton speakButton;
+    private AutoCompleteTextView textView;
+    private Button searchButton;
+    private Toolbar toolbar;
+    private RecyclerView recyclerView;
+
+    private List<String> ids;
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,14 +41,16 @@ public class MainActivity extends Activity implements AsyncResponse {
         ConnectTask task = new ConnectTask(this);
         task.delegate = this;
         task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_ids");
-
         ids = new ArrayList<>();
-        textView = findViewById(R.id.auto_text_view);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Кабинет №666");
+        recyclerView = findViewById(R.id.list_items);
         speakButton = findViewById(R.id.btn_speak);
-        searchButton = findViewById(R.id.btn_search);
-
         speakButton.setOnClickListener(v -> speak());
+        searchButton = findViewById(R.id.btn_search);
         searchButton.setOnClickListener(v -> search());
+        textView = findViewById(R.id.auto_text_view);
         textView.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchButton.performClick();
@@ -43,7 +58,30 @@ public class MainActivity extends Activity implements AsyncResponse {
             }
             return false;
         });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                searchView.setQuery("", false);
+                searchItem.collapseActionView();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return true;
     }
 
     @Override
@@ -51,6 +89,8 @@ public class MainActivity extends Activity implements AsyncResponse {
         ids.addAll(Arrays.asList(output.split(",")));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ids);
         textView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new Adapter(ids));
     }
 
     public void speak() {

@@ -4,34 +4,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".MainActivity">
+
+    <include layout="@layout/toolbar" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-        <AutoCompleteTextView
-            android:id="@+id/auto_text_view"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/text_hint"
-            android:inputType="number"
-            android:imeOptions="actionDone"/>
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/btn_speak"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/btn_speak"
-            android:src="@drawable/ic_micro" />
+            <AutoCompleteTextView
+                android:id="@+id/auto_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_hint"
+                android:imeOptions="actionDone"
+                android:inputType="number" />
 
-        <Button
-            android:id="@+id/btn_search"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/btn_search" />
+            <ImageButton
+                android:id="@+id/btn_speak"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/btn_speak"
+                android:src="@drawable/ic_micro" />
+
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/btn_search" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 
 
