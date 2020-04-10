@@ -13,23 +13,26 @@
         android:orientation="horizontal">
 
         <AutoCompleteTextView
-            android:id="@+id/text_view"
+            android:id="@+id/auto_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/text_hint" />
+            android:hint="@string/text_hint"
+            android:inputType="number"
+            android:imeOptions="actionDone"/>
 
         <ImageButton
             android:id="@+id/btn_speak"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:contentDescription="@string/btn_speak"
             android:src="@drawable/ic_micro" />
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/btn_search" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_search" />
 
 </LinearLayout>

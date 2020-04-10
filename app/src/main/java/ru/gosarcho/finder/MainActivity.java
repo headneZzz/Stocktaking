@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -29,12 +30,20 @@ public class MainActivity extends Activity implements AsyncResponse {
         task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_ids");
 
         ids = new ArrayList<>();
-        textView = findViewById(R.id.text_view);
+        textView = findViewById(R.id.auto_text_view);
         speakButton = findViewById(R.id.btn_speak);
         searchButton = findViewById(R.id.btn_search);
 
         speakButton.setOnClickListener(v -> speak());
         searchButton.setOnClickListener(v -> search());
+        textView.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchButton.performClick();
+                return true;
+            }
+            return false;
+        });
+
     }
 
     @Override
@@ -66,7 +75,6 @@ public class MainActivity extends Activity implements AsyncResponse {
         String value = textView.getText().toString();
         if (ids.contains(value)) {
             startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", value));
-            finish();
         }
     }
 }
