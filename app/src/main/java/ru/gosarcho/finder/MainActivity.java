@@ -117,14 +117,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ids);
         textView.setAdapter(adapter);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new ItemsRecyclerAdapter(jsonArray, this));
     }
 
     public void speak() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Назовите номер дела");
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
@@ -151,10 +151,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
         JSONObject jsonObject = null;
         try {
             jsonObject = jsonArray.getJSONObject(position);
+            String id = jsonObject.optString("id");
+            startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", id));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String id = jsonObject.optString("id");
-        startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", id));
     }
 }

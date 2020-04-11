@@ -7,4 +7,10 @@
     <string name="prompt_username">Фио</string>
     <string name="prompt_location">Номер кабинета</string>
     <string name="action_sign_in">Войти</string>
+
+    <string name="location">Место: кабинет №</string>
+    <string name="previousLocation">Предыдущее место: кабинет №</string>
+    <string name="isDecommissioned">Списано:</string>
+    <string name="executor">Исполнитель:</string>
+    <string name="receiptDate">Последнее изменение:</string>
 </resources>

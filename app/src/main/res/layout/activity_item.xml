@@ -7,8 +7,69 @@
     android:padding="16dp"
     tools:context=".ItemActivity">
 
-    <TextView
-        android:id="@+id/number"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="2dp"
+            android:src="@drawable/ic_print_black" />
+
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/image_view"
+            android:textColor="@android:color/black"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/location"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:id="@+id/previous_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/previousLocation"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:id="@+id/is_decommissioned"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/isDecommissioned"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:id="@+id/executor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/executor"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:id="@+id/receiptDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/receiptDate"
+        android:textSize="22sp"/>
+
 </LinearLayout>
