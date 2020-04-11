@@ -20,10 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -35,7 +32,7 @@ import static ru.gosarcho.finder.LoginActivity.LOGIN_PREF;
 import static ru.gosarcho.finder.LoginActivity.SAVED_LOCATION;
 import static ru.gosarcho.finder.LoginActivity.SAVED_USERNAME;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponse {
+public class MainActivity extends AppCompatActivity implements AsyncResponse, ItemsRecyclerAdapter.OnItemListener {
     private ImageButton speakButton;
     private AutoCompleteTextView textView;
     private Button searchButton;
@@ -45,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private int location;
     private String username;
     private List<String> ids;
+    JSONArray jsonArray;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     @Override
@@ -107,10 +105,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     @Override
     public void processFinish(String output) {
-        JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(output);
-            for (int i=0;i<jsonArray.length();i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String id = jsonObject.optString("id");
                 ids.add(id);
@@ -121,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ids);
         textView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new Adapter(jsonArray));
+        recyclerView.setAdapter(new ItemsRecyclerAdapter(jsonArray, this));
     }
 
     public void speak() {
@@ -147,5 +144,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         if (ids.contains(value)) {
             startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", value));
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = jsonArray.getJSONObject(position);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String id = jsonObject.optString("id");
+        startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", id));
     }
 }

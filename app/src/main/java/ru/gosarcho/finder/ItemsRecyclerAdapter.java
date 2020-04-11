@@ -12,18 +12,20 @@ import org.json.JSONObject;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
+public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> {
     private JSONArray items;
+    private OnItemListener onItemListener;
 
-    Adapter(JSONArray items) {
+    ItemsRecyclerAdapter(JSONArray items, OnItemListener onItemListener) {
         this.items = items;
+        this.onItemListener = onItemListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
-        return new ViewHolder(itemView);
+        return new ViewHolder(itemView, onItemListener);
     }
 
     @Override
@@ -43,14 +45,26 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return items.length();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView idTextView;
         TextView nameTextView;
+        OnItemListener onItemListener;
 
-        ViewHolder(View itemView) {
+        ViewHolder(View itemView, OnItemListener onItemListener) {
             super(itemView);
             idTextView = itemView.findViewById(R.id.text_list_item1);
             nameTextView = itemView.findViewById(R.id.text_list_item2);
+            this.onItemListener = onItemListener;
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            onItemListener.onItemClick(getAdapterPosition());
+        }
+    }
+
+    public interface OnItemListener {
+        void onItemClick(int position);
     }
 }
