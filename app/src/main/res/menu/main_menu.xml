@@ -8,4 +8,10 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
+    <item
+        android:id="@+id/voice"
+        android:icon="@drawable/ic_micro"
+        android:title="@android:string/search_go"
+        app:showAsAction="always" />
+
 </menu>

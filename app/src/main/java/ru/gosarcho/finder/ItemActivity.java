@@ -13,7 +13,7 @@ public class ItemActivity extends Activity implements AsyncResponse {
     private TextView idTextView;
     private TextView itemNameTextView;
     private TextView locationTextView;
-    private TextView previusLoactionTextView;
+    private TextView previousLocationTextView;
     private TextView executorTextView;
     private TextView receiptDateTextView;
     private TextView isDecommissionedTextView;
@@ -25,7 +25,7 @@ public class ItemActivity extends Activity implements AsyncResponse {
         idTextView = findViewById(R.id.id);
         itemNameTextView = findViewById(R.id.item_name);
         locationTextView = findViewById(R.id.location);
-        previusLoactionTextView = findViewById(R.id.previous_location);
+        previousLocationTextView = findViewById(R.id.previous_location);
         executorTextView = findViewById(R.id.executor);
         receiptDateTextView = findViewById(R.id.receiptDate);
         isDecommissionedTextView = findViewById(R.id.is_decommissioned);
@@ -43,7 +43,7 @@ public class ItemActivity extends Activity implements AsyncResponse {
             idTextView.setText(jsonObject.getString("id"));
             itemNameTextView.setText(jsonObject.getString("name"));
             locationTextView.append(jsonObject.getString("location"));
-            previusLoactionTextView.append(jsonObject.getString("previousLocation"));
+            previousLocationTextView.append(jsonObject.getString("previousLocation"));
             executorTextView.append(" " + jsonObject.getString("executor"));
             boolean isDecommissioned = jsonObject.getBoolean("decommissioned");
             isDecommissionedTextView.append(" " + (isDecommissioned ? "Да" : "Нет"));

@@ -15,7 +15,6 @@ import androidx.appcompat.app.AlertDialog;
 public class ConnectTask extends AsyncTask<String, Void, String> {
     public AsyncResponse delegate = null;
     private ProgressDialog dialog;
-    private AlertDialog alertDialog;
     private Context context;
     private boolean isFailed;
 
@@ -63,7 +62,7 @@ public class ConnectTask extends AsyncTask<String, Void, String> {
         if (!isFailed) {
             delegate.processFinish(result);
         } else {
-            alertDialog = new AlertDialog.Builder(context).create();
+            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             alertDialog.setTitle("Ошибка");
             alertDialog.setMessage(result);
             alertDialog.show();

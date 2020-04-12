@@ -8,46 +8,11 @@
 
     <include layout="@layout/toolbar" />
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_items"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <AutoCompleteTextView
-                android:id="@+id/auto_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/text_hint"
-                android:imeOptions="actionDone"
-                android:inputType="number" />
-
-            <ImageButton
-                android:id="@+id/btn_speak"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/btn_speak"
-                android:src="@drawable/ic_micro" />
-
-            <Button
-                android:id="@+id/btn_search"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/btn_search" />
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_items"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
+        android:paddingRight="16dp" />
 
 </LinearLayout>

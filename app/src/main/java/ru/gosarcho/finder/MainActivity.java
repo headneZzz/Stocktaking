@@ -1,24 +1,17 @@
 package ru.gosarcho.finder;
 
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.ImageButton;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,16 +26,13 @@ import static ru.gosarcho.finder.LoginActivity.SAVED_LOCATION;
 import static ru.gosarcho.finder.LoginActivity.SAVED_USERNAME;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, ItemsRecyclerAdapter.OnItemListener {
-    private ImageButton speakButton;
-    private AutoCompleteTextView textView;
-    private Button searchButton;
-    private Toolbar toolbar;
-    private RecyclerView recyclerView;
-
+    private ItemsRecyclerAdapter adapter;
+    private SearchView searchView;
+    private MenuItem searchItem;
     private int location;
     private String username;
     private List<String> ids;
-    JSONArray jsonArray;
+    List<Item> items;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     @Override
@@ -60,43 +50,32 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
             task.delegate = this;
             task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by_location/" + location);
             ids = new ArrayList<>();
-            toolbar = findViewById(R.id.toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setTitle("Кабинет №" + location);
-            recyclerView = findViewById(R.id.list_items);
-            speakButton = findViewById(R.id.btn_speak);
-            speakButton.setOnClickListener(v -> speak());
-            searchButton = findViewById(R.id.btn_search);
-            searchButton.setOnClickListener(v -> search());
-            textView = findViewById(R.id.auto_text_view);
-            textView.setOnEditorActionListener((v, actionId, event) -> {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    searchButton.performClick();
-                    return true;
-                }
-                return false;
-            });
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchItem = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+        searchItem = menu.findItem(R.id.search);
+        searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchView.clearFocus();
-                searchView.setQuery("", false);
-                searchItem.collapseActionView();
+                if (ids.contains(searchView.getQuery().toString())) {
+                    searchView.clearFocus();
+                    searchItem.collapseActionView();
+                    //FIXME: getQuery return null
+                    startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", searchView.getQuery().toString()));
+                }
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
                 return false;
             }
         });
@@ -104,22 +83,26 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
     }
 
     @Override
-    public void processFinish(String output) {
-        try {
-            jsonArray = new JSONArray(output);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String id = jsonObject.optString("id");
-                ids.add(id);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.voice) {
+            speak();
+            return true;
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ids);
-        textView.setAdapter(adapter);
+        return false;
+    }
 
+    @Override
+    public void processFinish(String output) {
+        Type type = new TypeToken<List<Item>>() {
+        }.getType();
+        items = new Gson().fromJson(output, type);
+        for (Item item : items) {
+            ids.add(item.getId());
+        }
+        adapter = new ItemsRecyclerAdapter(items, this);
+        RecyclerView recyclerView = findViewById(R.id.list_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new ItemsRecyclerAdapter(jsonArray, this));
+        recyclerView.setAdapter(adapter);
     }
 
     public void speak() {
@@ -132,29 +115,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            textView.setText(result.get(0));
-        }
-    }
-
-    public void search() {
-        String value = textView.getText().toString();
-        if (ids.contains(value)) {
-            startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", value));
+            searchItem.expandActionView();
+            searchView.setQuery(result.get(0), false);
         }
     }
 
     @Override
     public void onItemClick(int position) {
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = jsonArray.getJSONObject(position);
-            String id = jsonObject.optString("id");
-            startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", id));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", items.get(position).getId()));
     }
 }

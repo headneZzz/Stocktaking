@@ -3,21 +3,24 @@ package ru.gosarcho.finder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> {
-    private JSONArray items;
+public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> implements Filterable {
+    private List<Item> items;
+    private List<Item> itemListFull;
     private OnItemListener onItemListener;
 
-    ItemsRecyclerAdapter(JSONArray items, OnItemListener onItemListener) {
+    ItemsRecyclerAdapter(List<Item> items, OnItemListener onItemListener) {
         this.items = items;
+        itemListFull = new ArrayList<>(items);
         this.onItemListener = onItemListener;
     }
 
@@ -30,20 +33,48 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        try {
-            JSONObject jsonObject = items.getJSONObject(position);
-            holder.idTextView.setText(jsonObject.optString("id"));
-            holder.nameTextView.setText(jsonObject.optString("name"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        holder.idTextView.setText(items.get(position).getId());
+        holder.nameTextView.setText(items.get(position).getName());
     }
 
 
     @Override
     public int getItemCount() {
-        return items.length();
+        return items.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return itemFilter;
+    }
+
+    private Filter itemFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Item> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(itemListFull);
+            } else {
+                String filteredPattern = constraint.toString().trim();
+                for (Item item : itemListFull) {
+                    if (item.getId().contains(filteredPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            items.clear();
+            items.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView idTextView;
