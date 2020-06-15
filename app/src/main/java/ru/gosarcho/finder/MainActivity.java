@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
     public void speak() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Назовите номер дела");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Назовите номер");
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             searchItem.expandActionView();
-            searchView.setQuery(result.get(0), false);
+            searchView.setQuery(result.get(0).replace(" ",""), false);
         }
     }
 
