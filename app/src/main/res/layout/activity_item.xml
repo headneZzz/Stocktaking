@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".ItemActivity">
+    tools:context=".activity.ItemActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="2dp"
-            android:src="@drawable/ic_print_black" />
+            android:src="@drawable/ic_another_color" />
 
         <TextView
             android:id="@+id/id"
@@ -45,31 +45,31 @@
         android:textSize="22sp"/>
 
     <TextView
-        android:id="@+id/previous_location"
+        android:id="@+id/type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/previousLocation"
+        android:text="@string/type"
         android:textSize="22sp"/>
 
     <TextView
-        android:id="@+id/is_decommissioned"
+        android:id="@+id/is_working"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/isDecommissioned"
+        android:text="@string/isWorking"
         android:textSize="22sp"/>
 
     <TextView
-        android:id="@+id/executor"
+        android:id="@+id/purchase_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/executor"
+        android:text="@string/purchaseDate"
         android:textSize="22sp"/>
 
     <TextView
-        android:id="@+id/receiptDate"
+        android:id="@+id/history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/receiptDate"
+        android:text="@string/history"
         android:textSize="22sp"/>
 
 </LinearLayout>

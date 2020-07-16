@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -13,12 +14,14 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ru.gosarcho.finder.model.Item;
+
 public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> implements Filterable {
     private List<Item> items;
     private List<Item> itemListFull;
     private OnItemListener onItemListener;
 
-    ItemsRecyclerAdapter(List<Item> items, OnItemListener onItemListener) {
+    public ItemsRecyclerAdapter(List<Item> items, OnItemListener onItemListener) {
         this.items = items;
         itemListFull = new ArrayList<>(items);
         this.onItemListener = onItemListener;
@@ -33,8 +36,10 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.idTextView.setText(items.get(position).getId());
-        holder.nameTextView.setText(items.get(position).getName());
+        Item item = items.get(position);
+        holder.idTextView.setText(item.getId());
+        holder.nameTextView.setText(item.getName());
+        item.setIconImage(holder.icon);
     }
 
 
@@ -79,12 +84,14 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView idTextView;
         TextView nameTextView;
+        ImageView icon;
         OnItemListener onItemListener;
 
         ViewHolder(View itemView, OnItemListener onItemListener) {
             super(itemView);
             idTextView = itemView.findViewById(R.id.text_list_item1);
             nameTextView = itemView.findViewById(R.id.text_list_item2);
+            icon = itemView.findViewById(R.id.image_view);
             this.onItemListener = onItemListener;
             itemView.setOnClickListener(this);
         }

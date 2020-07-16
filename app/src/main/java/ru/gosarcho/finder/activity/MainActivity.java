@@ -1,4 +1,4 @@
-package ru.gosarcho.finder;
+package ru.gosarcho.finder.activity;
 
 
 import android.content.Intent;
@@ -21,9 +21,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static ru.gosarcho.finder.LoginActivity.LOGIN_PREF;
-import static ru.gosarcho.finder.LoginActivity.SAVED_LOCATION;
-import static ru.gosarcho.finder.LoginActivity.SAVED_USERNAME;
+import ru.gosarcho.finder.AsyncResponse;
+import ru.gosarcho.finder.ConnectTask;
+import ru.gosarcho.finder.ItemsRecyclerAdapter;
+import ru.gosarcho.finder.R;
+import ru.gosarcho.finder.model.Item;
+
+import static ru.gosarcho.finder.activity.LoginActivity.LOGIN_PREF;
+import static ru.gosarcho.finder.activity.LoginActivity.SAVED_LOCATION;
+import static ru.gosarcho.finder.activity.LoginActivity.SAVED_USERNAME;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, ItemsRecyclerAdapter.OnItemListener {
     private ItemsRecyclerAdapter adapter;
@@ -48,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
             location = sPref.getInt(SAVED_LOCATION, 0);
             ConnectTask task = new ConnectTask(this);
             task.delegate = this;
-            task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by_location/" + location);
+            task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by?location=" + location);
             ids = new ArrayList<>();
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -93,14 +99,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
 
     @Override
     public void processFinish(String output) {
-        Type type = new TypeToken<List<Item>>() {
-        }.getType();
+        Type type = new TypeToken<List<Item>>() {}.getType();
         items = new Gson().fromJson(output, type);
         for (Item item : items) {
             ids.add(item.getId());
         }
         adapter = new ItemsRecyclerAdapter(items, this);
-        RecyclerView recyclerView = findViewById(R.id.list_items);
+        RecyclerView recyclerView = findViewById(R.id.activity_main);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
@@ -118,12 +123,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             searchItem.expandActionView();
-            searchView.setQuery(result.get(0).replace(" ",""), false);
+            searchView.setQuery(result.get(0).replace(" ", ""), false);
         }
     }
 
     @Override
     public void onItemClick(int position) {
-        startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", items.get(position).getId()));
+        startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("item", items.get(position)));
     }
 }

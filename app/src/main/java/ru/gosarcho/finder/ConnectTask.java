@@ -18,7 +18,7 @@ public class ConnectTask extends AsyncTask<String, Void, String> {
     private Context context;
     private boolean isFailed;
 
-    ConnectTask(Context context) {
+    public ConnectTask(Context context) {
         this.context = context;
     }
 

@@ -19,7 +19,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="2dp"
-            android:src="@drawable/ic_print_black" />
+            android:src="@drawable/ic_another_color" />
 
         <TextView
             android:id="@+id/text_list_item1"
@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/image_view"
+            android:layout_marginStart="8dp"
             android:text="Line 1"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -37,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_list_item1"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_toEndOf="@+id/image_view"
             android:text="Line 2"
             android:textSize="15sp" />

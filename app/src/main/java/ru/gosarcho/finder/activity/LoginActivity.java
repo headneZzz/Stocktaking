@@ -1,4 +1,4 @@
-package ru.gosarcho.finder;
+package ru.gosarcho.finder.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import ru.gosarcho.finder.R;
 
 public class LoginActivity extends AppCompatActivity {
     static SharedPreferences sPref;
