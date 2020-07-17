@@ -8,6 +8,7 @@ import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -44,6 +46,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
     List<Item> items;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            if (item.getItemId() == R.id.nav_camera) {
+                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class));
+            }
+            return true;
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
         } else {
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
+            BottomNavigationView bottomNav = findViewById(R.id.bot_nav);
+            bottomNav.setOnNavigationItemSelectedListener(navListener);
             username = sPref.getString(SAVED_USERNAME, "");
             location = sPref.getInt(SAVED_LOCATION, 0);
             ConnectTask task = new ConnectTask(this);
