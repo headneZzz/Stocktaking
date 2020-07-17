@@ -5,13 +5,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Objects;
-
 import ru.gosarcho.finder.R;
 import ru.gosarcho.finder.model.Item;
 
@@ -45,5 +38,10 @@ public class ItemActivity extends Activity {
 
         TextView historyTextView = findViewById(R.id.history);
         historyTextView.append(item.getHistory().toString());
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
     }
 }

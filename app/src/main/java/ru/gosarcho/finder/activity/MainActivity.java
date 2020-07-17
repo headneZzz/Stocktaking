@@ -9,10 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import ru.gosarcho.finder.AsyncResponse;
 import ru.gosarcho.finder.ConnectTask;
 import ru.gosarcho.finder.ItemsRecyclerAdapter;
+import ru.gosarcho.finder.DateAdapter;
 import ru.gosarcho.finder.R;
 import ru.gosarcho.finder.model.Item;
 
@@ -50,15 +53,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         } else {
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
             username = sPref.getString(SAVED_USERNAME, "");
             location = sPref.getInt(SAVED_LOCATION, 0);
             ConnectTask task = new ConnectTask(this);
             task.delegate = this;
-            task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by?location=" + location);
+            if (username.equals("admin")) {
+                getSupportActionBar().setTitle("Все кабинеты");
+                task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items");
+            } else {
+                getSupportActionBar().setTitle("Кабинет №" + location);
+                task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by?location=" + location);
+            }
             ids = new ArrayList<>();
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle("Кабинет №" + location);
+
         }
     }
 
@@ -99,13 +108,18 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
 
     @Override
     public void processFinish(String output) {
-        Type type = new TypeToken<List<Item>>() {}.getType();
-        items = new Gson().fromJson(output, type);
+        Type type = new TypeToken<List<Item>>() {
+        }.getType();
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(Date.class, new DateAdapter().nullSafe())
+                .create();
+        items = gson.fromJson(output, type);
         for (Item item : items) {
             ids.add(item.getId());
         }
         adapter = new ItemsRecyclerAdapter(items, this);
-        RecyclerView recyclerView = findViewById(R.id.activity_main);
+        RecyclerView recyclerView = findViewById(R.id.items_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }

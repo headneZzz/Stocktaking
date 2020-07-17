@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="searchViewStyle">@style/AppSearchViewStyle</item>
+<!--        <item name="android:windowAnimationStyle">@style/ActivitySlideAnimation</item>-->
     </style>
 
     <style name="AppSearchViewStyle" parent="Widget.AppCompat.SearchView">
@@ -16,6 +17,13 @@
         <item name="closeIcon">@drawable/ic_arrow_back</item>
         <item name="queryHint">@string/text_hint</item>
         <item name="android:imeActionId">6</item>
+    </style>
+
+    <style name="ActivitySlideAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
     </style>
     <style name="ActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
 

@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_main"
+        android:id="@+id/items_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"/>
+        android:layout_below="@id/toolbar"
+        android:layout_above="@id/bot_nav"
+        android:scrollbars="vertical" />
 
-</LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bot_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation" />
+</RelativeLayout>

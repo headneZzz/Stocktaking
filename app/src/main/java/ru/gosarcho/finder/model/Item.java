@@ -3,7 +3,8 @@ package ru.gosarcho.finder.model;
 import android.widget.ImageView;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import ru.gosarcho.finder.R;
@@ -13,8 +14,7 @@ public class Item implements Serializable {
     private ItemType type;
     private int location;
     private String name;
-    //FIXME: должно быть LocalDate, но gson ругается
-    private String purchaseDate;
+    private Date purchaseDate;
     private boolean isWorking;
     private List<Action> history;
 
@@ -43,7 +43,7 @@ public class Item implements Serializable {
     }
 
     public String getPurchaseDate() {
-        return purchaseDate;
+        return new SimpleDateFormat("dd.MM.yyyy").format(purchaseDate);
     }
 
     public void setIconImage(ImageView icon) {
