@@ -1,4 +1,4 @@
-package ru.gosarcho.finder;
+package ru.gosarcho.stocktaking;
 
 import org.junit.Test;
 

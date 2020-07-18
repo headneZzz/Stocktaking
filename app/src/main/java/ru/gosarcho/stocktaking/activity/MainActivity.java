@@ -1,4 +1,4 @@
-package ru.gosarcho.finder.activity;
+package ru.gosarcho.stocktaking.activity;
 
 
 import android.content.Intent;
@@ -24,44 +24,38 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import ru.gosarcho.stocktaking.AsyncResponse;
+import ru.gosarcho.stocktaking.ConnectTask;
+import ru.gosarcho.stocktaking.DateAdapter;
+import ru.gosarcho.stocktaking.ItemsRecyclerAdapter;
+import ru.gosarcho.stocktaking.R;
+import ru.gosarcho.stocktaking.model.Item;
 
-import ru.gosarcho.finder.AsyncResponse;
-import ru.gosarcho.finder.ConnectTask;
-import ru.gosarcho.finder.ItemsRecyclerAdapter;
-import ru.gosarcho.finder.DateAdapter;
-import ru.gosarcho.finder.R;
-import ru.gosarcho.finder.model.Item;
-
-import static ru.gosarcho.finder.activity.LoginActivity.LOGIN_PREF;
-import static ru.gosarcho.finder.activity.LoginActivity.SAVED_LOCATION;
-import static ru.gosarcho.finder.activity.LoginActivity.SAVED_USERNAME;
-
-public class MainActivity extends AppCompatActivity implements AsyncResponse, ItemsRecyclerAdapter.OnItemListener {
+public class MainActivity extends AppCompatActivity implements AsyncResponse, ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener {
+    SwipeRefreshLayout swipeRefreshLayout;
+    RecyclerView recyclerView;
     private ItemsRecyclerAdapter adapter;
     private SearchView searchView;
     private MenuItem searchItem;
     private int location;
     private String username;
-    private List<String> ids;
     List<Item> items;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            if (item.getItemId() == R.id.nav_camera) {
-                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class));
-            }
-            return true;
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
+        if (item.getItemId() == R.id.nav_camera) {
+            startActivity(new Intent(getApplicationContext(), QRCameraActivity.class));
         }
+        return true;
     };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SharedPreferences sPref = getSharedPreferences(LOGIN_PREF, MODE_PRIVATE);
-        if (!sPref.contains(SAVED_USERNAME)) {
+        SharedPreferences sPref = getSharedPreferences(LoginActivity.LOGIN_PREF, MODE_PRIVATE);
+        if (!sPref.contains(LoginActivity.SAVED_USERNAME)) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         } else {
@@ -69,19 +63,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
             setSupportActionBar(toolbar);
             BottomNavigationView bottomNav = findViewById(R.id.bot_nav);
             bottomNav.setOnNavigationItemSelectedListener(navListener);
-            username = sPref.getString(SAVED_USERNAME, "");
-            location = sPref.getInt(SAVED_LOCATION, 0);
+            recyclerView = findViewById(R.id.items_list);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            swipeRefreshLayout = findViewById(R.id.swipe_container);
+            swipeRefreshLayout.setOnRefreshListener(this);
+            username = sPref.getString(LoginActivity.SAVED_USERNAME, "");
+            location = sPref.getInt(LoginActivity.SAVED_LOCATION, 0);
+            getSupportActionBar().setTitle("Кабинет №" + location);
+
             ConnectTask task = new ConnectTask(this);
             task.delegate = this;
-            if (username.equals("admin")) {
-                getSupportActionBar().setTitle("Все кабинеты");
-                task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items");
-            } else {
-                getSupportActionBar().setTitle("Кабинет №" + location);
-                task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by?location=" + location);
-            }
-            ids = new ArrayList<>();
-
+            swipeRefreshLayout.post(() -> task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by?location=" + location));
         }
     }
 
@@ -93,13 +85,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (ids.contains(searchView.getQuery().toString())) {
-                    searchView.clearFocus();
-                    searchItem.collapseActionView();
-                    //FIXME: getQuery return null
-                    startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("Id", searchView.getQuery().toString()));
-                }
-                return true;
+                return false;
             }
 
             @Override
@@ -129,12 +115,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
                 .registerTypeAdapter(Date.class, new DateAdapter().nullSafe())
                 .create();
         items = gson.fromJson(output, type);
-        for (Item item : items) {
-            ids.add(item.getId());
-        }
         adapter = new ItemsRecyclerAdapter(items, this);
-        RecyclerView recyclerView = findViewById(R.id.items_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
 
@@ -158,5 +139,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
     @Override
     public void onItemClick(int position) {
         startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("item", items.get(position)));
+    }
+
+    @Override
+    public void onRefresh() {
+        ConnectTask task = new ConnectTask(this);
+        task.delegate = this;
+        task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by?location=" + location);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

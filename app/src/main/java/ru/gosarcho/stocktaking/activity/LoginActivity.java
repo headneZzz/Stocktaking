@@ -1,4 +1,4 @@
-package ru.gosarcho.finder.activity;
+package ru.gosarcho.stocktaking.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import ru.gosarcho.finder.R;
+import ru.gosarcho.stocktaking.R;
 
 public class LoginActivity extends AppCompatActivity {
     static SharedPreferences sPref;
@@ -25,9 +25,7 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.username);
         locationEditText = findViewById(R.id.location);
         Button loginButton = findViewById(R.id.login_btn);
-        loginButton.setOnClickListener(v -> {
-            login(usernameEditText.getText().toString(), Integer.parseInt(locationEditText.getText().toString()));
-        });
+        loginButton.setOnClickListener(v -> login(usernameEditText.getText().toString(), Integer.parseInt(locationEditText.getText().toString())));
     }
 
     private void login(String username, int location) {

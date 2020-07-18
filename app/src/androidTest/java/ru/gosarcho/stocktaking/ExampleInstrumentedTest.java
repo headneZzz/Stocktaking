@@ -1,4 +1,4 @@
-package ru.gosarcho.finder;
+package ru.gosarcho.stocktaking;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("ru.gosarcho.finder", appContext.getPackageName());
+        assertEquals("ru.gosarcho.stocktaking", appContext.getPackageName());
     }
 }

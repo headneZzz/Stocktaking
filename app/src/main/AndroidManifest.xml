@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="ru.gosarcho.finder">
+    package="ru.gosarcho.stocktaking">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -17,16 +17,16 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
         <activity
-            android:name=".activity.LoginActivity"
+            android:name="ru.gosarcho.stocktaking.activity.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name="ru.gosarcho.stocktaking.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ItemActivity" />
-        <activity android:name=".activity.QRCameraActivity" />
+        <activity android:name="ru.gosarcho.stocktaking.activity.ItemActivity" />
+        <activity android:name="ru.gosarcho.stocktaking.activity.QRCameraActivity" />
     </application>
 
 </manifest>

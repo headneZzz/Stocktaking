@@ -1,4 +1,4 @@
-package ru.gosarcho.finder;
+package ru.gosarcho.stocktaking;
 
 import android.app.ProgressDialog;
 import android.content.Context;

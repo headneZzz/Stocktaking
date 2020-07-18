@@ -1,4 +1,4 @@
-package ru.gosarcho.finder;
+package ru.gosarcho.stocktaking;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +13,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import ru.gosarcho.finder.model.Item;
+import ru.gosarcho.stocktaking.model.Item;
 
 public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> implements Filterable {
     private List<Item> items;

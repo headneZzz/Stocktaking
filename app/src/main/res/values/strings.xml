@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Finder</string>
+    <string name="app_name">Stocktaking</string>
     <string name="btn_speak">Голос</string>
     <string name="btn_search">Найти</string>
     <string name="text_hint">Введите номер предмета</string>

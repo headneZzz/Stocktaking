@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "ru.gosarcho.finder"
+        applicationId "ru.gosarcho.stocktaking"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -20,6 +21,10 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+}
+
+realm {
+    syncEnabled = true
 }
 
 dependencies {
