@@ -16,13 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import ru.gosarcho.stocktaking.model.Item;
 
 public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> implements Filterable {
-    private List<Item> items;
+    private List<Item> itemListTemp;
     private List<Item> itemListFull;
     private OnItemListener onItemListener;
 
-    public ItemsRecyclerAdapter(List<Item> items, OnItemListener onItemListener) {
-        this.items = items;
-        itemListFull = new ArrayList<>(items);
+    public ItemsRecyclerAdapter(List<Item> itemListFull, OnItemListener onItemListener) {
+        this.itemListFull = itemListFull;
+        this.itemListTemp = new ArrayList<>(this.itemListFull);
         this.onItemListener = onItemListener;
     }
 
@@ -35,7 +35,7 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Item item = items.get(position);
+        Item item = itemListTemp.get(position);
         holder.idTextView.setText(item.getId());
         holder.nameTextView.setText(item.getName());
         item.setIconImage(holder.icon);
@@ -44,7 +44,7 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return itemListTemp.size();
     }
 
     @Override
@@ -60,9 +60,9 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(itemListFull);
             } else {
-                String filteredPattern = constraint.toString().trim();
+                String filteredPattern = constraint.toString().trim().toLowerCase();
                 for (Item item : itemListFull) {
-                    if (item.getId().contains(filteredPattern)) {
+                    if (item.getId().toLowerCase().contains(filteredPattern)) {
                         filteredList.add(item);
                     }
                 }
@@ -74,8 +74,8 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            items.clear();
-            items.addAll((List) results.values);
+            itemListTemp.clear();
+            itemListTemp.addAll((List) results.values);
             notifyDataSetChanged();
         }
     };

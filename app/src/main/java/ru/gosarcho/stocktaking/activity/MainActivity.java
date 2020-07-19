@@ -5,34 +5,29 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import ru.gosarcho.stocktaking.AsyncResponse;
-import ru.gosarcho.stocktaking.ConnectTask;
-import ru.gosarcho.stocktaking.DateAdapter;
 import ru.gosarcho.stocktaking.ItemsRecyclerAdapter;
 import ru.gosarcho.stocktaking.R;
 import ru.gosarcho.stocktaking.model.Item;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponse, ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener {
+    FirebaseFirestore db;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     private ItemsRecyclerAdapter adapter;
@@ -70,11 +65,32 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
             username = sPref.getString(LoginActivity.SAVED_USERNAME, "");
             location = sPref.getInt(LoginActivity.SAVED_LOCATION, 0);
             getSupportActionBar().setTitle("Кабинет №" + location);
-
-            ConnectTask task = new ConnectTask(this);
-            task.delegate = this;
-            swipeRefreshLayout.post(() -> task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by?location=" + location));
+            items = new ArrayList<>();
+            db = FirebaseFirestore.getInstance();
+            getDateFromFireBase();
+            swipeRefreshLayout.setRefreshing(true);
         }
+    }
+
+    public void getDateFromFireBase() {
+        items.clear();
+        db.collection("items")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Item item = document.toObject(Item.class);
+                            if (item.getLocation() == location) {
+                                items.add(item);
+                            }
+                        }
+                    } else {
+                        Log.w("myLogs", "Error getting documents.", task.getException());
+                    }
+                    swipeRefreshLayout.setRefreshing(false);
+                    adapter = new ItemsRecyclerAdapter(items, this);
+                    recyclerView.setAdapter(adapter);
+                });
     }
 
     @Override
@@ -106,19 +122,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
         return false;
     }
 
-    @Override
-    public void processFinish(String output) {
-        Type type = new TypeToken<List<Item>>() {
-        }.getType();
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(Date.class, new DateAdapter().nullSafe())
-                .create();
-        items = gson.fromJson(output, type);
-        adapter = new ItemsRecyclerAdapter(items, this);
-        recyclerView.setAdapter(adapter);
-    }
-
     public void speak() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -143,9 +146,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, It
 
     @Override
     public void onRefresh() {
-        ConnectTask task = new ConnectTask(this);
-        task.delegate = this;
-        task.execute("https://find-inventory-api-test.herokuapp.com/get_all_items_by?location=" + location);
-        swipeRefreshLayout.setRefreshing(false);
+        getDateFromFireBase();
     }
 }
