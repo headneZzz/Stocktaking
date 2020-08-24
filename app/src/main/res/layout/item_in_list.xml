@@ -22,7 +22,7 @@
             android:src="@drawable/ic_another_color" />
 
         <TextView
-            android:id="@+id/text_list_item1"
+            android:id="@+id/text_list_item_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -34,10 +34,10 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/text_list_item2"
+            android:id="@+id/text_list_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/text_list_item1"
+            android:layout_below="@+id/text_list_item_id"
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@+id/image_view"
             android:text="Line 2"

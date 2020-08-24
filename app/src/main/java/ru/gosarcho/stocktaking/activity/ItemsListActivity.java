@@ -9,6 +9,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -16,17 +23,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import ru.gosarcho.stocktaking.ItemsRecyclerAdapter;
 import ru.gosarcho.stocktaking.R;
 import ru.gosarcho.stocktaking.model.Item;
 
-public class MainActivity extends AppCompatActivity implements ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener {
+public class ItemsListActivity extends AppCompatActivity implements ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener {
     FirebaseFirestore db;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements ItemsRecyclerAdap
     private SearchView searchView;
     private MenuItem searchItem;
     private int location;
-    private String username;
     List<Item> items;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
@@ -48,41 +48,35 @@ public class MainActivity extends AppCompatActivity implements ItemsRecyclerAdap
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        SharedPreferences sPref = getSharedPreferences(LoginActivity.LOGIN_PREF, MODE_PRIVATE);
-        if (!sPref.contains(LoginActivity.SAVED_USERNAME)) {
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
-        } else {
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            BottomNavigationView bottomNav = findViewById(R.id.bot_nav);
-            bottomNav.setOnNavigationItemSelectedListener(navListener);
-            recyclerView = findViewById(R.id.items_list);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            swipeRefreshLayout = findViewById(R.id.swipe_container);
-            swipeRefreshLayout.setOnRefreshListener(this);
-            username = sPref.getString(LoginActivity.SAVED_USERNAME, "");
-            location = sPref.getInt(LoginActivity.SAVED_LOCATION, 0);
-            getSupportActionBar().setTitle("Кабинет №" + location);
-            items = new ArrayList<>();
-            db = FirebaseFirestore.getInstance();
-            getDateFromFireBase();
-            swipeRefreshLayout.setRefreshing(true);
-        }
+        setContentView(R.layout.activity_items_list);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        BottomNavigationView bottomNav = findViewById(R.id.bot_nav);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        recyclerView = findViewById(R.id.items_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        swipeRefreshLayout = findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        location = getIntent().getIntExtra("location", 0);
+        getSupportActionBar().setTitle("Кабинет №" + location);
+        items = new ArrayList<>();
+        db = FirebaseFirestore.getInstance();
+        getDateFromFireBase();
+        swipeRefreshLayout.setRefreshing(true);
+
     }
 
     public void getDateFromFireBase() {
         items.clear();
         db.collection("items")
+                .whereEqualTo("location", location)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Item item = document.toObject(Item.class);
-                            if (item.getLocation() == location) {
-                                items.add(item);
-                            }
+                            items.add(item);
                         }
                     } else {
                         Log.w("myLogs", "Error getting documents.", task.getException());

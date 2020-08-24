@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString(SAVED_USERNAME, usernameEditText.getText().toString());
         editor.putInt(SAVED_LOCATION, Integer.parseInt(locationEditText.getText().toString()));
         editor.apply();
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        startActivity(new Intent(LoginActivity.this, ItemsListActivity.class));
         finish();
     }
 }

@@ -29,7 +29,7 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_in_list, parent, false);
         return new ViewHolder(itemView, onItemListener);
     }
 
@@ -88,8 +88,8 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
 
         ViewHolder(View itemView, OnItemListener onItemListener) {
             super(itemView);
-            idTextView = itemView.findViewById(R.id.text_list_item1);
-            nameTextView = itemView.findViewById(R.id.text_list_item2);
+            idTextView = itemView.findViewById(R.id.text_list_item_id);
+            nameTextView = itemView.findViewById(R.id.text_list_item_name);
             icon = itemView.findViewById(R.id.image_view);
             this.onItemListener = onItemListener;
             itemView.setOnClickListener(this);
