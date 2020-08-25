@@ -15,7 +15,7 @@
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bot_nav"
+        android:layout_above="@id/bottom_app_bar"
         android:layout_below="@id/toolbar">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -26,11 +26,10 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bot_nav"
+        android:id="@+id/bottom_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-
         android:background="?android:attr/windowBackground"
         app:menu="@menu/bottom_navigation" />
 </RelativeLayout>

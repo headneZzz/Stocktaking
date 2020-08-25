@@ -69,7 +69,7 @@ public class Item implements Serializable {
     }
 
     public String getType() {
-        return type.toString();
+        return type.getType();
     }
 
     public void setType(ItemType type) {

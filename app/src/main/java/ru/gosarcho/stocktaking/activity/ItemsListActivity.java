@@ -2,7 +2,6 @@ package ru.gosarcho.stocktaking.activity;
 
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -39,8 +38,12 @@ public class ItemsListActivity extends AppCompatActivity implements ItemsRecycle
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
+        if (item.getItemId() == R.id.nav_add) {
+        }
         if (item.getItemId() == R.id.nav_camera) {
             startActivity(new Intent(getApplicationContext(), QRCameraActivity.class));
+        }
+        if (item.getItemId() == R.id.nav_send) {
         }
         return true;
     };
@@ -52,7 +55,7 @@ public class ItemsListActivity extends AppCompatActivity implements ItemsRecycle
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        BottomNavigationView bottomNav = findViewById(R.id.bot_nav);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_app_bar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         recyclerView = findViewById(R.id.items_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
