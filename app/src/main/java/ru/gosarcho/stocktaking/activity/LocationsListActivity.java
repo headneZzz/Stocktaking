@@ -8,6 +8,7 @@ import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -55,7 +56,7 @@ public class LocationsListActivity extends AppCompatActivity implements Location
             recyclerView = findViewById(R.id.locations_list);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            getSupportActionBar().setTitle("Инвентаризация");
+            getSupportActionBar().setTitle(R.string.app_name);
             locations = new ArrayList<>();
             db = FirebaseFirestore.getInstance();
             getDateFromFireBase();
@@ -72,7 +73,8 @@ public class LocationsListActivity extends AppCompatActivity implements Location
                     if (task.isSuccessful()) {
                         locations.addAll(task.getResult().toObjects(Location.class));
                     } else {
-                        Log.w("myLogs", "Error getting documents.", task.getException());
+                        Toast toast = Toast.makeText(getApplicationContext(), "Ошибка подключения к бд", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                     swipeRefreshLayout.setRefreshing(false);
                     adapter = new LocationsRecyclerAdapter(locations, this);

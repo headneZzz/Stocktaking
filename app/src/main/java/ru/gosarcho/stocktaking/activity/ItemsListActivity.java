@@ -4,13 +4,14 @@ package ru.gosarcho.stocktaking.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -37,17 +38,6 @@ public class ItemsListActivity extends AppCompatActivity implements ItemsRecycle
     List<Item> items;
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
-        if (item.getItemId() == R.id.nav_add) {
-        }
-        if (item.getItemId() == R.id.nav_camera) {
-            startActivity(new Intent(getApplicationContext(), QRCameraActivity.class));
-        }
-        if (item.getItemId() == R.id.nav_send) {
-        }
-        return true;
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +60,16 @@ public class ItemsListActivity extends AppCompatActivity implements ItemsRecycle
 
     }
 
+    @Override
+    public void onItemClick(int position) {
+        startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("item", items.get(position)));
+    }
+
+    @Override
+    public void onRefresh() {
+        getDateFromFireBase();
+    }
+
     public void getDateFromFireBase() {
         items.clear();
         db.collection("items")
@@ -82,13 +82,30 @@ public class ItemsListActivity extends AppCompatActivity implements ItemsRecycle
                             items.add(item);
                         }
                     } else {
-                        Log.w("myLogs", "Error getting documents.", task.getException());
+                        Toast toast = Toast.makeText(getApplicationContext(), "Ошибка подключения к бд", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                     swipeRefreshLayout.setRefreshing(false);
                     adapter = new ItemsRecyclerAdapter(items, this);
                     recyclerView.setAdapter(adapter);
                 });
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
+        switch(item.getItemId()){
+            case R.id.nav_add:
+                DialogFragment dialogFragment = new NewItemDialogFragment();
+                dialogFragment.show(getSupportFragmentManager(), "NewItem");
+                break;
+            case R.id.nav_camera:
+                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class));
+                break;
+            case R.id.nav_send:
+
+                break;
+        }
+        return true;
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,15 +151,5 @@ public class ItemsListActivity extends AppCompatActivity implements ItemsRecycle
             searchItem.expandActionView();
             searchView.setQuery(result.get(0).replace(" ", ""), false);
         }
-    }
-
-    @Override
-    public void onItemClick(int position) {
-        startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("item", items.get(position)));
-    }
-
-    @Override
-    public void onRefresh() {
-        getDateFromFireBase();
     }
 }

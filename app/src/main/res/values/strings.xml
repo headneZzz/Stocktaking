@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stocktaking</string>
+    <string name="app_name">Инвентаризация</string>
     <string name="btn_speak">Голос</string>
     <string name="btn_search">Найти</string>
     <string name="text_hint">Введите номер предмета</string>
@@ -7,6 +7,12 @@
     <string name="prompt_username">Фио</string>
     <string name="prompt_location">Номер кабинета</string>
     <string name="action_sign_in">Войти</string>
+
+    <string name="dialog_new_item_title">Добавление предмета в кабинет</string>
+    <string name="dialog_new_item_hint">Интвентарник</string>
+
+    <string name="add">Добавить</string>
+    <string name="cancel">Отмена</string>
 
     <string name="location">"Кабинет: "</string>
     <string name="type">"Тип: "</string>
