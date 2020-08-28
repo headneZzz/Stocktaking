@@ -1,5 +1,6 @@
 package ru.gosarcho.stocktaking;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,24 +13,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.gosarcho.stocktaking.model.Item;
 
 public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> implements Filterable {
     private List<Item> itemListTemp;
     private List<Item> itemListFull;
+    List<CardView> cardViewList;  //TODO: Не используется
     private OnItemListener onItemListener;
 
     public ItemsRecyclerAdapter(List<Item> itemListFull, OnItemListener onItemListener) {
         this.itemListFull = itemListFull;
         this.itemListTemp = new ArrayList<>(this.itemListFull);
+        this.cardViewList = new ArrayList<>();
         this.onItemListener = onItemListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_in_list, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row, parent, false);
         return new ViewHolder(itemView, onItemListener);
     }
 
@@ -39,6 +43,10 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
         holder.idTextView.setText(item.getId());
         holder.nameTextView.setText(item.getName());
         item.setIconImage(holder.icon);
+
+        if (!cardViewList.contains(holder.cardView)) {
+            cardViewList.add(holder.cardView);
+        }
     }
 
 
@@ -80,7 +88,8 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
         }
     };
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        CardView cardView;
         TextView idTextView;
         TextView nameTextView;
         ImageView icon;
@@ -88,6 +97,7 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
 
         ViewHolder(View itemView, OnItemListener onItemListener) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.item_row_card);
             idTextView = itemView.findViewById(R.id.text_list_item_id);
             nameTextView = itemView.findViewById(R.id.text_list_item_name);
             icon = itemView.findViewById(R.id.image_view);
@@ -97,6 +107,7 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
 
         @Override
         public void onClick(View v) {
+            cardView.setCardBackgroundColor(Color.GREEN);
             onItemListener.onItemClick(getAdapterPosition());
         }
     }

@@ -40,22 +40,22 @@ public class Item implements Serializable {
     public void setIconImage(ImageView icon) {
         switch (type) {
             case PC:
-                icon.setImageResource(R.drawable.ic_pc_color);
+                icon.setImageResource(R.drawable.ic_item_pc_tower_color);
                 break;
             case MONITOR:
-                icon.setImageResource(R.drawable.ic_monitor_color);
+                icon.setImageResource(R.drawable.ic_item_monitor_color);
                 break;
             case UPS:
-                icon.setImageResource(R.drawable.ic_ups_color);
+                icon.setImageResource(R.drawable.ic_item_ups_color);
                 break;
             case SCANNER:
-                icon.setImageResource(R.drawable.ic_scanner_color);
+                icon.setImageResource(R.drawable.ic_item_scanner_color);
                 break;
             case PRINTER:
-                icon.setImageResource(R.drawable.ic_printer_color);
+                icon.setImageResource(R.drawable.ic_item_printer_color);
                 break;
             case ANOTHER:
-                icon.setImageResource(R.drawable.ic_another_color);
+                icon.setImageResource(R.drawable.ic_item_another_color);
                 break;
         }
     }

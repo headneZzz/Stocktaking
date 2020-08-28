@@ -16,7 +16,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:padding="2dp"
-            android:src="@drawable/ic_another_color" />
+            android:src="@drawable/ic_item_another_color" />
 
         <TextView
             android:id="@+id/id"

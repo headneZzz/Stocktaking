@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +28,8 @@ import ru.gosarcho.stocktaking.ItemsRecyclerAdapter;
 import ru.gosarcho.stocktaking.R;
 import ru.gosarcho.stocktaking.model.Item;
 
-public class ItemsListActivity extends AppCompatActivity implements ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener {
+public class ItemsListActivity extends AppCompatActivity
+        implements ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {
     FirebaseFirestore db;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -57,12 +59,12 @@ public class ItemsListActivity extends AppCompatActivity implements ItemsRecycle
         db = FirebaseFirestore.getInstance();
         getDateFromFireBase();
         swipeRefreshLayout.setRefreshing(true);
-
     }
 
     @Override
     public void onItemClick(int position) {
-        startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("item", items.get(position)));
+        //startActivity(new Intent(getApplicationContext(), ItemActivity.class).putExtra("item", items.get(position)));
+
     }
 
     @Override
@@ -106,6 +108,12 @@ public class ItemsListActivity extends AppCompatActivity implements ItemsRecycle
         }
         return true;
     };
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        EditText itemIdText = dialog.getDialog().findViewById(R.id.item_id_text);
+        String itemId = itemIdText.getText().toString();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

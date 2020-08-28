@@ -1,6 +1,5 @@
 package ru.gosarcho.stocktaking;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +25,13 @@ public class LocationsRecyclerAdapter extends RecyclerView.Adapter<LocationsRecy
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.location_in_list, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.location_row, parent, false);
         return new ViewHolder(itemView, onLocationListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.locationText.setText("Кабинет " + locations.get(position).getId());
-        Log.d("AYE", locations.get(position).getStatus().toString());
         locations.get(position).setIconImage(holder.checkIcon);
     }
 
