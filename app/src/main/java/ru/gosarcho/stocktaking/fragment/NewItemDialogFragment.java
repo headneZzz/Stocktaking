@@ -1,10 +1,11 @@
-package ru.gosarcho.stocktaking.activity;
+package ru.gosarcho.stocktaking.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.widget.Button;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -33,10 +34,21 @@ public class NewItemDialogFragment extends DialogFragment {
         builder.setTitle(R.string.dialog_new_item_title);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_new_item, null))
-                .setPositiveButton(R.string.add, (dialog, id) -> {
-                    listener.onDialogPositiveClick(NewItemDialogFragment.this);
-                })
+                .setPositiveButton(R.string.add, null)
                 .setNegativeButton(R.string.cancel, (dialog, id) -> NewItemDialogFragment.this.getDialog().cancel());
         return builder.create();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        final AlertDialog d = (AlertDialog)getDialog();
+
+        if(d != null) {
+            Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(v -> {
+                listener.onDialogPositiveClick(NewItemDialogFragment.this);
+            });
+        }
     }
 }

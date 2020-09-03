@@ -23,6 +23,7 @@ public class Item implements Serializable {
     private Date purchaseDate;
     private boolean isWorking;
     private List<Action> history;
+    private boolean isChecked;
 
     public Item() {
     }
@@ -35,6 +36,7 @@ public class Item implements Serializable {
         this.purchaseDate = purchaseDate;
         this.isWorking = isWorking;
         this.history = history;
+        isChecked = false;
     }
 
     public void setIconImage(ImageView icon) {
@@ -114,6 +116,14 @@ public class Item implements Serializable {
 
     public void setHistory(List<Action> history) {
         this.history = history;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }
 

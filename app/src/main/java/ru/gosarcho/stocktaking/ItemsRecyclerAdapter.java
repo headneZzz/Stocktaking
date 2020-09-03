@@ -15,18 +15,17 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import ru.gosarcho.stocktaking.model.Item;
 
 public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> implements Filterable {
     private List<Item> itemListTemp;
     private List<Item> itemListFull;
-    List<CardView> cardViewList;  //TODO: Не используется
     private OnItemListener onItemListener;
 
     public ItemsRecyclerAdapter(List<Item> itemListFull, OnItemListener onItemListener) {
         this.itemListFull = itemListFull;
         this.itemListTemp = new ArrayList<>(this.itemListFull);
-        this.cardViewList = new ArrayList<>();
         this.onItemListener = onItemListener;
     }
 
@@ -43,10 +42,8 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
         holder.idTextView.setText(item.getId());
         holder.nameTextView.setText(item.getName());
         item.setIconImage(holder.icon);
-
-        if (!cardViewList.contains(holder.cardView)) {
-            cardViewList.add(holder.cardView);
-        }
+        //FIXME: хардкод цвета
+        holder.cardView.setCardBackgroundColor(item.isChecked() ? Color.parseColor("#D68B00") : Color.WHITE);
     }
 
 
@@ -65,15 +62,15 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Item> filteredList = new ArrayList<>();
 
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(itemListFull);
-            } else {
+            if (constraint != null && constraint.length() != 0) {
                 String filteredPattern = constraint.toString().trim().toLowerCase();
                 for (Item item : itemListFull) {
                     if (item.getId().toLowerCase().contains(filteredPattern)) {
                         filteredList.add(item);
                     }
                 }
+            } else {
+                filteredList.addAll(itemListFull);
             }
             FilterResults filterResults = new FilterResults();
             filterResults.values = filteredList;
@@ -88,7 +85,7 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
         }
     };
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         CardView cardView;
         TextView idTextView;
         TextView nameTextView;
@@ -102,13 +99,13 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
             nameTextView = itemView.findViewById(R.id.text_list_item_name);
             icon = itemView.findViewById(R.id.image_view);
             this.onItemListener = onItemListener;
-            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
-        public void onClick(View v) {
-            cardView.setCardBackgroundColor(Color.GREEN);
+        public boolean onLongClick(View v) {
             onItemListener.onItemClick(getAdapterPosition());
+            return true;
         }
     }
 

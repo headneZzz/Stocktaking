@@ -3,6 +3,7 @@
     <string name="btn_speak">Голос</string>
     <string name="btn_search">Найти</string>
     <string name="text_hint">Введите номер предмета</string>
+    <string name="voice_hint">Назовите номер (можно не весь)</string>
     <string name="title_activity_login">Регистрация</string>
     <string name="prompt_username">Фио</string>
     <string name="prompt_location">Номер кабинета</string>
@@ -14,9 +15,14 @@
     <string name="add">Добавить</string>
     <string name="cancel">Отмена</string>
 
-    <string name="location">"Кабинет: "</string>
+    <string name="location">"Кабинет "</string>
     <string name="type">"Тип: "</string>
-    <string name="isWorking">"Состояние: "</string>
+    <string name="is_working">"Состояние: "</string>
     <string name="history">"История: "</string>
-    <string name="purchaseDate">"Дата приобритения: "</string>
+    <string name="purchase_date">"Дата приобритения: "</string>
+    
+    <string name="error_connect_to_db">Ошибка подключения к базе</string>
+    <string name="error_no_item_in_db">Такого предмета нет в базе</string>
+    <string name="error_empty_input">Введите инвентарник</string>
+    <string name="error_item_already_in_list">Такой предмет уже есть в списке</string>
 </resources>

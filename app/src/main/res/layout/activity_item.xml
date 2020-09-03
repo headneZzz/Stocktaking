@@ -55,14 +55,14 @@
         android:id="@+id/is_working"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/isWorking"
+        android:text="@string/is_working"
         android:textSize="22sp"/>
 
     <TextView
         android:id="@+id/purchase_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/purchaseDate"
+        android:text="@string/purchase_date"
         android:textSize="22sp"/>
 
     <TextView

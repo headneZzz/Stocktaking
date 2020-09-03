@@ -28,13 +28,13 @@ import ru.gosarcho.stocktaking.R;
 import ru.gosarcho.stocktaking.model.Location;
 
 public class LocationsListActivity extends AppCompatActivity implements LocationsRecyclerAdapter.OnLocationListener, SwipeRefreshLayout.OnRefreshListener {
-    FirebaseFirestore db;
     RecyclerView recyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
-    private LocationsRecyclerAdapter adapter;
     private SearchView searchView;
     private MenuItem searchItem;
-    List<Location> locations;
+    List<Location> locations = new ArrayList<>();
+    private LocationsRecyclerAdapter adapter = new LocationsRecyclerAdapter(locations, this);
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     @Override
@@ -48,16 +48,12 @@ public class LocationsListActivity extends AppCompatActivity implements Location
         } else {
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-
+            getSupportActionBar().setTitle(R.string.app_name);
             swipeRefreshLayout = findViewById(R.id.swipe_container);
             swipeRefreshLayout.setOnRefreshListener(this);
-
             recyclerView = findViewById(R.id.locations_list);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-            getSupportActionBar().setTitle(R.string.app_name);
-            locations = new ArrayList<>();
-            db = FirebaseFirestore.getInstance();
+            recyclerView.setAdapter(adapter);
             getDateFromFireBase();
             swipeRefreshLayout.setRefreshing(true);
         }
@@ -71,13 +67,12 @@ public class LocationsListActivity extends AppCompatActivity implements Location
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         locations.addAll(task.getResult().toObjects(Location.class));
+                        adapter.notifyDataSetChanged();
                     } else {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Ошибка подключения к бд", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
                         toast.show();
                     }
                     swipeRefreshLayout.setRefreshing(false);
-                    adapter = new LocationsRecyclerAdapter(locations, this);
-                    recyclerView.setAdapter(adapter);
                 });
     }
 
@@ -112,7 +107,7 @@ public class LocationsListActivity extends AppCompatActivity implements Location
     public void speak() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Назовите номер");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, R.string.voice_hint);
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 
