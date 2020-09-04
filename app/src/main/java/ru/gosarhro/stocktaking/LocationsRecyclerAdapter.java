@@ -1,4 +1,4 @@
-package ru.gosarcho.stocktaking;
+package ru.gosarhro.stocktaking;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import ru.gosarcho.stocktaking.model.Location;
+import ru.gosarhro.stocktaking.model.Location;
 
 public class LocationsRecyclerAdapter extends RecyclerView.Adapter<LocationsRecyclerAdapter.ViewHolder> {
     private List<Location> locations;

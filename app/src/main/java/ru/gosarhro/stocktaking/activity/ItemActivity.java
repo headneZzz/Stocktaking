@@ -1,12 +1,12 @@
-package ru.gosarcho.stocktaking.activity;
+package ru.gosarhro.stocktaking.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ru.gosarcho.stocktaking.R;
-import ru.gosarcho.stocktaking.model.Item;
+import ru.gosarhro.stocktaking.R;
+import ru.gosarhro.stocktaking.model.Item;
 
 public class ItemActivity extends Activity {
     @Override
@@ -18,7 +18,7 @@ public class ItemActivity extends Activity {
         ImageView icon = findViewById(R.id.image_view);
         TextView idTextView = findViewById(R.id.id);
         TextView itemNameTextView = findViewById(R.id.item_name);
-        TextView locationTextView = findViewById(R.id.location);
+        TextView locationTextView = findViewById(R.id.password);
         TextView typeTextView = findViewById(R.id.type);
         TextView isWorkingTextView = findViewById(R.id.is_working);
         TextView purchaseDateTextView = findViewById(R.id.purchase_date);

@@ -1,4 +1,4 @@
-package ru.gosarcho.stocktaking.model;
+package ru.gosarhro.stocktaking.model;
 
 import java.io.Serializable;
 import java.util.Date;

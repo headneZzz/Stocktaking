@@ -1,4 +1,4 @@
-package ru.gosarcho.stocktaking.activity;
+package ru.gosarhro.stocktaking.activity;
 
 
 import android.content.Intent;
@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ru.gosarcho.stocktaking.LocationsRecyclerAdapter;
-import ru.gosarcho.stocktaking.R;
-import ru.gosarcho.stocktaking.model.Location;
+import ru.gosarhro.stocktaking.LocationsRecyclerAdapter;
+import ru.gosarhro.stocktaking.R;
+import ru.gosarhro.stocktaking.model.Location;
 
 public class LocationsListActivity extends AppCompatActivity implements LocationsRecyclerAdapter.OnLocationListener, SwipeRefreshLayout.OnRefreshListener {
     RecyclerView recyclerView;
@@ -42,7 +42,7 @@ public class LocationsListActivity extends AppCompatActivity implements Location
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_locations_list);
         SharedPreferences sPref = getSharedPreferences(LoginActivity.LOGIN_PREF, MODE_PRIVATE);
-        if (!sPref.contains(LoginActivity.SAVED_USERNAME)) {
+        if (!sPref.contains(LoginActivity.USERNAME)) {
             startActivity(new Intent(LocationsListActivity.this, LoginActivity.class));
             finish();
         } else {

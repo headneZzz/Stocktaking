@@ -1,11 +1,11 @@
-package ru.gosarcho.stocktaking.model;
+package ru.gosarhro.stocktaking.model;
 
 import android.widget.ImageView;
 
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
-import ru.gosarcho.stocktaking.R;
+import ru.gosarhro.stocktaking.R;
 
 @IgnoreExtraProperties
 public class Location {

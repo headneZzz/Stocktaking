@@ -1,4 +1,4 @@
-package ru.gosarcho.stocktaking;
+package ru.gosarhro.stocktaking;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

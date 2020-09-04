@@ -1,4 +1,4 @@
-package ru.gosarcho.stocktaking;
+package ru.gosarhro.stocktaking;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ru.gosarcho.stocktaking.model.Item;
+import ru.gosarhro.stocktaking.model.Item;
 
 public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdapter.ViewHolder> implements Filterable {
     private List<Item> itemListTemp;

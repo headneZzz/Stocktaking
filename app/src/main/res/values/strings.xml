@@ -5,8 +5,8 @@
     <string name="text_hint">Введите номер предмета</string>
     <string name="voice_hint">Назовите номер (можно не весь)</string>
     <string name="title_activity_login">Регистрация</string>
-    <string name="prompt_username">Фио</string>
-    <string name="prompt_location">Номер кабинета</string>
+    <string name="prompt_username">Логин</string>
+    <string name="prompt_password">Пароль</string>
     <string name="action_sign_in">Войти</string>
 
     <string name="dialog_new_item_title">Добавление предмета в кабинет</string>
@@ -23,6 +23,7 @@
     
     <string name="error_connect_to_db">Ошибка подключения к базе</string>
     <string name="error_no_item_in_db">Такого предмета нет в базе</string>
-    <string name="error_empty_input">Введите инвентарник</string>
+    <string name="error_empty_input">Пустое поле ввода</string>
     <string name="error_item_already_in_list">Такой предмет уже есть в списке</string>
+    <string name="error_login">Неверный логин или пароль</string>
 </resources>

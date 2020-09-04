@@ -1,4 +1,4 @@
-package ru.gosarcho.stocktaking.model;
+package ru.gosarhro.stocktaking.model;
 
 import android.widget.ImageView;
 
@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import ru.gosarcho.stocktaking.R;
+import ru.gosarhro.stocktaking.R;
 
 @IgnoreExtraProperties
 public class Item implements Serializable {

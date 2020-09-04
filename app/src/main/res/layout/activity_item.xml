@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context="ru.gosarcho.stocktaking.activity.ItemActivity">
+    tools:context="ru.gosarhro.stocktaking.activity.ItemActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
         android:textSize="22sp"/>
 
     <TextView
-        android:id="@+id/location"
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/location"

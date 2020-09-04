@@ -1,14 +1,11 @@
-package ru.gosarcho.stocktaking.activity;
+package ru.gosarhro.stocktaking.activity;
 
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -26,10 +23,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.gosarcho.stocktaking.ItemsRecyclerAdapter;
-import ru.gosarcho.stocktaking.R;
-import ru.gosarcho.stocktaking.fragment.NewItemDialogFragment;
-import ru.gosarcho.stocktaking.model.Item;
+import ru.gosarhro.stocktaking.ItemsRecyclerAdapter;
+import ru.gosarhro.stocktaking.R;
+import ru.gosarhro.stocktaking.fragment.NewItemDialogFragment;
+import ru.gosarhro.stocktaking.model.Item;
 
 public class ItemsListActivity extends AppCompatActivity
         implements ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {

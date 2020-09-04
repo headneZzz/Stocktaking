@@ -1,4 +1,4 @@
-package ru.gosarcho.stocktaking.fragment;
+package ru.gosarhro.stocktaking.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import androidx.fragment.app.DialogFragment;
 
-import ru.gosarcho.stocktaking.R;
+import ru.gosarhro.stocktaking.R;
 
 public class NewItemDialogFragment extends DialogFragment {
     public interface NewItemDialogListener {

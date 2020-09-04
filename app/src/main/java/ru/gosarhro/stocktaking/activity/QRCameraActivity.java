@@ -1,4 +1,4 @@
-package ru.gosarcho.stocktaking.activity;
+package ru.gosarhro.stocktaking.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
