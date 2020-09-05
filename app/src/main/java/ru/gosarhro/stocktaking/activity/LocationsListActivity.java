@@ -9,20 +9,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import ru.gosarhro.stocktaking.LocationsRecyclerAdapter;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.model.Location;
@@ -51,6 +51,7 @@ public class LocationsListActivity extends AppCompatActivity implements Location
             getSupportActionBar().setTitle(R.string.app_name);
             swipeRefreshLayout = findViewById(R.id.swipe_container);
             swipeRefreshLayout.setOnRefreshListener(this);
+
             recyclerView = findViewById(R.id.locations_list);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(adapter);
@@ -67,6 +68,7 @@ public class LocationsListActivity extends AppCompatActivity implements Location
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         locations.addAll(task.getResult().toObjects(Location.class));
+                        Collections.sort(locations, (o1, o2) -> o1.getId() - o2.getId());
                         adapter.notifyDataSetChanged();
                     } else {
                         Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);

@@ -1,5 +1,6 @@
 package ru.gosarhro.stocktaking.model;
 
+import android.view.View;
 import android.widget.ImageView;
 
 import com.google.firebase.firestore.DocumentId;
@@ -24,11 +25,14 @@ public class Location {
     public void setIconImage(ImageView icon) {
         switch (status) {
             case NOT_CHECKED:
+                icon.setVisibility(View.INVISIBLE);
                 break;
             case OK:
+                icon.setVisibility(View.VISIBLE);
                 icon.setImageResource(R.drawable.ic_baseline_check);
                 break;
             case LACK:
+                icon.setVisibility(View.VISIBLE);
                 icon.setImageResource(R.drawable.ic_baseline_close);
                 break;
         }

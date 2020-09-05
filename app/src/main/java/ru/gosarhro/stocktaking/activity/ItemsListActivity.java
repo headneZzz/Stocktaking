@@ -9,6 +9,13 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -16,13 +23,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import ru.gosarhro.stocktaking.ItemsRecyclerAdapter;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.fragment.NewItemDialogFragment;
@@ -81,6 +81,7 @@ public class ItemsListActivity extends AppCompatActivity
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         items.addAll(task.getResult().toObjects(Item.class));
+                        Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
                         adapter.getFilter().filter(null);
                     } else {
                         Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
@@ -123,7 +124,7 @@ public class ItemsListActivity extends AppCompatActivity
         if (checkIdInList(itemId)) {
             Toast toast = Toast.makeText(getApplicationContext(), R.string.error_item_already_in_list, Toast.LENGTH_SHORT);
             toast.show();
-        } else if(itemId.equals("")) {
+        } else if (itemId.equals("")) {
             Toast toast = Toast.makeText(getApplicationContext(), R.string.error_empty_input, Toast.LENGTH_SHORT);
             toast.show();
         } else {
@@ -136,9 +137,10 @@ public class ItemsListActivity extends AppCompatActivity
                             if (item != null) {
                                 item.setChecked(true);
                                 items.add(item);
+                                Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
                                 adapter.getFilter().filter("");
                                 dialog.dismiss();
-                                recyclerView.smoothScrollToPosition(items.size()-1);
+                                recyclerView.smoothScrollToPosition(items.indexOf(item));
                             } else {
                                 Toast toast = Toast.makeText(getApplicationContext(), R.string.error_no_item_in_db, Toast.LENGTH_SHORT);
                                 toast.show();
