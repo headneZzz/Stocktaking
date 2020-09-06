@@ -42,8 +42,7 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<ItemsRecyclerAdap
         holder.idTextView.setText(item.getId());
         holder.nameTextView.setText(item.getName());
         item.setIconImage(holder.icon);
-        //FIXME: хардкод цвета
-        holder.cardView.setCardBackgroundColor(item.isChecked() ? Color.parseColor("#D68B00") : Color.WHITE);
+        holder.cardView.setCardBackgroundColor(item.isChecked() ? holder.itemView.getContext().getResources().getColor(R.color.colorAccent2) : Color.WHITE);
     }
 
 
