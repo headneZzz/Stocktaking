@@ -11,12 +11,12 @@ import java.util.Date;
 
 public final class DateAdapter extends TypeAdapter<Date> {
     @Override
-    public void write(final JsonWriter jsonWriter, final Date date ) throws IOException {
+    public void write(final JsonWriter jsonWriter, final Date date) throws IOException {
         jsonWriter.value(date.toString());
     }
 
     @Override
-    public Date read( final JsonReader jsonReader ) throws IOException {
+    public Date read(final JsonReader jsonReader) throws IOException {
         try {
             return new SimpleDateFormat("yyyy-MM-dd").parse(jsonReader.nextString());
         } catch (ParseException e) {

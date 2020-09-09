@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import ru.gosarhro.stocktaking.LocationsRecyclerAdapter;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.model.Location;
@@ -62,7 +63,6 @@ public class LocationsListActivity extends AppCompatActivity implements Location
 
     public void getDateFromFireBase() {
         locations.clear();
-        String collectionName = new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis()));
         db.collection("locations")
                 .get()
                 .addOnCompleteListener(task -> {

@@ -98,7 +98,7 @@ public class Item implements Serializable {
         return new SimpleDateFormat("dd.MM.yyyy").format(purchaseDate);
     }
 
-    public void setPurchaseDate(String  purchaseDate) throws ParseException {
+    public void setPurchaseDate(String purchaseDate) throws ParseException {
         this.purchaseDate = new SimpleDateFormat("dd.MM.yyyy").parse(purchaseDate);
     }
 

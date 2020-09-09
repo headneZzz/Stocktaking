@@ -19,17 +19,17 @@ public class NewItemDialogFragment extends DialogFragment {
     NewItemDialogListener listener;
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
         try {
             listener = (NewItemDialogListener) getActivity();
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public Dialog onCreateDialog (Bundle savedInstanceState) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_new_item_title);
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -42,9 +42,9 @@ public class NewItemDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        final AlertDialog d = (AlertDialog)getDialog();
+        final AlertDialog d = (AlertDialog) getDialog();
 
-        if(d != null) {
+        if (d != null) {
             Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(v -> {
                 listener.onDialogPositiveClick(NewItemDialogFragment.this);

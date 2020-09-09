@@ -20,10 +20,11 @@
     <string name="is_working">"Состояние: "</string>
     <string name="history">"История: "</string>
     <string name="purchase_date">"Дата приобритения: "</string>
-    
+
+    <string name="hint_item_already_in_list">Такой предмет уже был в списке</string>
+
     <string name="error_connect_to_db">Ошибка подключения к базе</string>
     <string name="error_no_item_in_db">Такого предмета нет в базе</string>
     <string name="error_empty_input">Пустое поле ввода</string>
-    <string name="error_item_already_in_list">Такой предмет уже есть в списке</string>
     <string name="error_login">Неверный логин или пароль</string>
 </resources>

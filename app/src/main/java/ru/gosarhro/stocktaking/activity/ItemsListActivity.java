@@ -9,13 +9,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -23,6 +16,18 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import ru.gosarhro.stocktaking.ItemsRecyclerAdapter;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.fragment.NewItemDialogFragment;
@@ -36,7 +41,7 @@ public class ItemsListActivity extends AppCompatActivity
     private SearchView searchView;
     private MenuItem searchItem;
     private int location;
-    List<Item> items = new ArrayList<>();
+    static List<Item> items = new ArrayList<>();
     private ItemsRecyclerAdapter adapter = new ItemsRecyclerAdapter(items, this);
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
@@ -63,6 +68,12 @@ public class ItemsListActivity extends AppCompatActivity
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        adapter.getFilter().filter("");
+    }
+
+    @Override
     public void onItemClick(int position) {
         items.get(position).setChecked(!items.get(position).isChecked());
         adapter.notifyDataSetChanged();
@@ -75,14 +86,26 @@ public class ItemsListActivity extends AppCompatActivity
 
     public void getItemsFromDb() {
         items.clear();
-        db.collection("items")
-                .whereEqualTo("location", location)
+        HashMap<String, Boolean> foundedItemIdsMap = new HashMap<>();
+        String collectionName = new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis()));
+        db.collection(collectionName)
+                .document(String.valueOf(location))
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        items.addAll(task.getResult().toObjects(Item.class));
+                        foundedItemIdsMap.putAll((Map<String, Boolean>) task.getResult().get("items"));
+                        for(Map.Entry itemEntry : foundedItemIdsMap.entrySet()) {
+                            db.collection("items")
+                                    .document((String) itemEntry.getKey())
+                                    .get()
+                                    .addOnSuccessListener(result -> {
+                                            Item itemFromDb = result.toObject(Item.class);
+                                            itemFromDb.setChecked((Boolean) itemEntry.getValue());
+                                            items.add(itemFromDb);
+                                            adapter.getFilter().filter(null);
+                                    });
+                        }
                         Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
-                        adapter.getFilter().filter(null);
                     } else {
                         Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
                         toast.show();
@@ -98,7 +121,7 @@ public class ItemsListActivity extends AppCompatActivity
                 dialogFragment.show(getSupportFragmentManager(), "NewItem");
                 break;
             case R.id.nav_camera:
-                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class));
+                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class).putExtra("location", location));
                 break;
             case R.id.nav_send:
 
@@ -107,26 +130,27 @@ public class ItemsListActivity extends AppCompatActivity
         return true;
     };
 
-    private boolean checkIdInList(String itemId) {
+
+    static Item getItemByIdInList(String itemId) {
         for (Item item : items) {
             if (item.getId().equals(itemId)) {
-                return true;
+                return item;
             }
         }
-        return false;
+        return null;
     }
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         EditText itemIdText = dialog.getDialog().findViewById(R.id.item_id_text);
         String itemId = itemIdText.getText().toString();
-
-        if (checkIdInList(itemId)) {
-            Toast toast = Toast.makeText(getApplicationContext(), R.string.error_item_already_in_list, Toast.LENGTH_SHORT);
-            toast.show();
+        Item itemInList = getItemByIdInList(itemId);
+        if (itemInList != null) {
+            itemInList.setChecked(true);
+            recyclerView.smoothScrollToPosition(items.indexOf(itemInList));
+            Toast.makeText(getApplicationContext(), R.string.hint_item_already_in_list, Toast.LENGTH_SHORT).show();
         } else if (itemId.equals("")) {
-            Toast toast = Toast.makeText(getApplicationContext(), R.string.error_empty_input, Toast.LENGTH_SHORT);
-            toast.show();
+            Toast.makeText(getApplicationContext(), R.string.error_empty_input, Toast.LENGTH_SHORT).show();
         } else {
             db.collection("items")
                     .document(itemId)
@@ -142,12 +166,10 @@ public class ItemsListActivity extends AppCompatActivity
                                 dialog.dismiss();
                                 recyclerView.smoothScrollToPosition(items.indexOf(item));
                             } else {
-                                Toast toast = Toast.makeText(getApplicationContext(), R.string.error_no_item_in_db, Toast.LENGTH_SHORT);
-                                toast.show();
+                                Toast.makeText(getApplicationContext(), R.string.error_no_item_in_db, Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
-                            toast.show();
+                            Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT).show();
                         }
                     });
         }
