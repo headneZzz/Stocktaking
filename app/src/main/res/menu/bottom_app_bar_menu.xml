@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/nav_add"
+        android:id="@+id/app_bar_add"
         android:icon="@drawable/ic_baseline_add"
         android:title="Добавить"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/nav_camera"
+        android:id="@+id/app_bar_camera"
         android:icon="@drawable/ic_camera_black"
         android:title="QR-камера"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/nav_send"
+        android:id="@+id/app_bar_send"
         android:icon="@drawable/ic_baseline_send"
         android:title="Отправить"
         app:showAsAction="ifRoom"/>

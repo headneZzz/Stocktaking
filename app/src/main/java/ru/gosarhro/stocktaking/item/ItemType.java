@@ -1,4 +1,4 @@
-package ru.gosarhro.stocktaking.model;
+package ru.gosarhro.stocktaking.item;
 
 public enum ItemType {
     PC("Системный блок"),

@@ -8,6 +8,6 @@
     android:minHeight="?attr/actionBarSize"
     android:theme="?attr/actionBarTheme"
     app:collapseIcon="@drawable/ic_arrow_back"
-    app:titleTextColor="@android:color/white">
+    app:titleTextColor="@color/colorPrimaryDark">
 
 </androidx.appcompat.widget.Toolbar>

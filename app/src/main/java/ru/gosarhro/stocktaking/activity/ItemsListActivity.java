@@ -28,21 +28,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.gosarhro.stocktaking.ItemsRecyclerAdapter;
+import ru.gosarhro.stocktaking.item.ItemRecyclerAdapter;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.fragment.NewItemDialogFragment;
-import ru.gosarhro.stocktaking.model.Item;
+import ru.gosarhro.stocktaking.item.Item;
 
 public class ItemsListActivity extends AppCompatActivity
-        implements ItemsRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {
+        implements ItemRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String currentCollectionName = new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis()));
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     private SearchView searchView;
     private MenuItem searchItem;
     private int location;
     static List<Item> items = new ArrayList<>();
-    private ItemsRecyclerAdapter adapter = new ItemsRecyclerAdapter(items, this);
+    private ItemRecyclerAdapter adapter = new ItemRecyclerAdapter(items, this);
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     @Override
@@ -55,17 +56,30 @@ public class ItemsListActivity extends AppCompatActivity
         getSupportActionBar().setTitle(getResources().getString(R.string.location) + location);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_app_bar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-
         swipeRefreshLayout = findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
-
         recyclerView = findViewById(R.id.items_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
         getItemsFromDb();
         swipeRefreshLayout.setRefreshing(true);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {
+        switch (menuItem.getItemId()) {
+            case R.id.app_bar_add:
+                DialogFragment dialogFragment = new NewItemDialogFragment();
+                dialogFragment.show(getSupportFragmentManager(), "NewItem");
+                break;
+            case R.id.app_bar_camera:
+                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class).putExtra("location", location));
+                break;
+            case R.id.app_bar_send:
+                saveItemsInDb();
+                break;
+        }
+        return true;
+    };
 
     @Override
     public void onResume() {
@@ -86,23 +100,22 @@ public class ItemsListActivity extends AppCompatActivity
 
     public void getItemsFromDb() {
         items.clear();
-        HashMap<String, Boolean> foundedItemIdsMap = new HashMap<>();
-        String collectionName = new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis()));
-        db.collection(collectionName)
+        Map<String, Boolean> foundedItemIdsMap = new HashMap<>();
+        db.collection(currentCollectionName)
                 .document(String.valueOf(location))
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful() && task.getResult().get("items") != null) {
                         foundedItemIdsMap.putAll((Map<String, Boolean>) task.getResult().get("items"));
-                        for(Map.Entry itemEntry : foundedItemIdsMap.entrySet()) {
+                        for (Map.Entry itemEntry : foundedItemIdsMap.entrySet()) {
                             db.collection("items")
                                     .document((String) itemEntry.getKey())
                                     .get()
                                     .addOnSuccessListener(result -> {
-                                            Item itemFromDb = result.toObject(Item.class);
-                                            itemFromDb.setChecked((Boolean) itemEntry.getValue());
-                                            items.add(itemFromDb);
-                                            adapter.getFilter().filter(null);
+                                        Item itemFromDb = result.toObject(Item.class);
+                                        itemFromDb.setChecked((Boolean) itemEntry.getValue());
+                                        items.add(itemFromDb);
+                                        adapter.getFilter().filter(null);
                                     });
                         }
                         Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
@@ -114,22 +127,38 @@ public class ItemsListActivity extends AppCompatActivity
                 });
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
-        switch (item.getItemId()) {
-            case R.id.nav_add:
-                DialogFragment dialogFragment = new NewItemDialogFragment();
-                dialogFragment.show(getSupportFragmentManager(), "NewItem");
-                break;
-            case R.id.nav_camera:
-                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class).putExtra("location", location));
-                break;
-            case R.id.nav_send:
-
-                break;
+    private void saveItemsInDb() {
+        boolean isLocationFullChecked = true;
+        Map<String, Boolean> foundedItemIdsMap = new HashMap<>();
+        for (Item item : items) {
+            if (isLocationFullChecked && !item.isChecked()) {
+                isLocationFullChecked = false;
+            }
+            foundedItemIdsMap.put(item.getId(), item.isChecked());
         }
-        return true;
-    };
-
+        boolean finalIsLocationFullChecked = isLocationFullChecked;
+        db.collection(currentCollectionName)
+                .document(String.valueOf(location))
+                .update("items", foundedItemIdsMap)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (finalIsLocationFullChecked) {
+                            db.collection("locations")
+                                    .document(String.valueOf(location))
+                                    .update("status", "OK");
+                        } else {
+                            db.collection("locations")
+                                    .document(String.valueOf(location))
+                                    .update("status", "LACK");
+                        }
+                        Toast.makeText(getApplicationContext(), "Данные отправлены", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
     static Item getItemByIdInList(String itemId) {
         for (Item item : items) {
@@ -177,7 +206,7 @@ public class ItemsListActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         searchItem = menu.findItem(R.id.search);
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

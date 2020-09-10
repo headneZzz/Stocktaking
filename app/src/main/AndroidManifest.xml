@@ -17,7 +17,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
         <activity android:name="ru.gosarhro.stocktaking.activity.LoginActivity"/>
-        <activity android:name="ru.gosarhro.stocktaking.activity.LocationsListActivity">
+        <activity android:name="ru.gosarhro.stocktaking.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

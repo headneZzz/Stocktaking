@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString(USERNAME, username);
                                 editor.putString(PASSWORD, password);
                                 editor.apply();
-                                startActivity(new Intent(LoginActivity.this, LocationsListActivity.class));
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();
                             } else {
                                 Toast toast = Toast.makeText(getApplicationContext(), R.string.error_login, Toast.LENGTH_SHORT);

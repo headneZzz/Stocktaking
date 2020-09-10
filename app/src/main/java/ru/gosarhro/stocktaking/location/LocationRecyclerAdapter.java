@@ -1,4 +1,4 @@
-package ru.gosarhro.stocktaking;
+package ru.gosarhro.stocktaking.location;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import ru.gosarhro.stocktaking.model.Location;
+import ru.gosarhro.stocktaking.R;
 
-public class LocationsRecyclerAdapter extends RecyclerView.Adapter<LocationsRecyclerAdapter.ViewHolder> {
+public class LocationRecyclerAdapter extends RecyclerView.Adapter<LocationRecyclerAdapter.ViewHolder> {
     private List<Location> locations;
     private OnLocationListener onLocationListener;
 
-    public LocationsRecyclerAdapter(List<Location> locations, OnLocationListener onLocationListener) {
+    public LocationRecyclerAdapter(List<Location> locations, OnLocationListener onLocationListener) {
         this.locations = locations;
         this.onLocationListener = onLocationListener;
     }

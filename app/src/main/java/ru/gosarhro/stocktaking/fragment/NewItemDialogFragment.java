@@ -33,7 +33,7 @@ public class NewItemDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_new_item_title);
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.dialog_new_item, null))
+        builder.setView(inflater.inflate(R.layout.fragment_dialog_new_item, null))
                 .setPositiveButton(R.string.add, null)
                 .setNegativeButton(R.string.cancel, (dialog, id) -> NewItemDialogFragment.this.getDialog().cancel());
         return builder.create();

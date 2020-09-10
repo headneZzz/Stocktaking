@@ -1,4 +1,4 @@
-package ru.gosarhro.stocktaking.model;
+package ru.gosarhro.stocktaking.location;
 
 public enum LocationStatus {
     NOT_CHECKED,

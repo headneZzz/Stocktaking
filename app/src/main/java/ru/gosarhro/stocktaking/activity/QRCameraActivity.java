@@ -17,7 +17,7 @@ import java.util.Collections;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import ru.gosarhro.stocktaking.R;
-import ru.gosarhro.stocktaking.model.Item;
+import ru.gosarhro.stocktaking.item.Item;
 
 import static android.Manifest.permission.CAMERA;
 import static ru.gosarhro.stocktaking.activity.ItemsListActivity.getItemByIdInList;
@@ -88,8 +88,7 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
                                     items.add(item);
                                     Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
                                     Toast.makeText(getApplicationContext(), itemId + " добавлен в кабинет " + location, Toast.LENGTH_LONG).show();
-                                    scannerView.resumeCameraPreview(QRCameraActivity.this);
-                                });
+                                 });
                                 builder.setNegativeButton("Отмена", (dialog, which) -> {
                                     dialog.cancel();
                                 });
@@ -103,5 +102,6 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
                         }
                     });
         }
+        scannerView.resumeCameraPreview(QRCameraActivity.this);
     }
 }

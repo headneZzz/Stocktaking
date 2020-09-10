@@ -1,4 +1,4 @@
-package ru.gosarhro.stocktaking.model;
+package ru.gosarhro.stocktaking.location;
 
 import android.view.View;
 import android.widget.ImageView;
