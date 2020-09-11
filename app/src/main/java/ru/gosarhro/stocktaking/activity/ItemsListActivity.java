@@ -44,7 +44,7 @@ public class ItemsListActivity extends AppCompatActivity
     private int location;
     static List<Item> items = new ArrayList<>();
     private ItemRecyclerAdapter adapter = new ItemRecyclerAdapter(items, this);
-    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+    private final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class ItemsListActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        adapter.getFilter().filter("");
+        adapter.getFilter().filter(null);
     }
 
     @Override
@@ -191,7 +191,7 @@ public class ItemsListActivity extends AppCompatActivity
                                 item.setChecked(true);
                                 items.add(item);
                                 Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
-                                adapter.getFilter().filter("");
+                                adapter.getFilter().filter(null);
                                 dialog.dismiss();
                                 recyclerView.smoothScrollToPosition(items.indexOf(item));
                             } else {
@@ -229,17 +229,13 @@ public class ItemsListActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.voice) {
-            speak();
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, R.string.voice_hint);
+            startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
             return true;
         }
         return false;
-    }
-
-    public void speak() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, R.string.voice_hint);
-        startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 
     @Override

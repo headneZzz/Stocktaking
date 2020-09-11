@@ -25,7 +25,7 @@ import ru.gosarhro.stocktaking.activity.ItemsListActivity;
 import ru.gosarhro.stocktaking.location.Location;
 import ru.gosarhro.stocktaking.location.LocationRecyclerAdapter;
 
-public class LocationsListFragment extends Fragment implements LocationRecyclerAdapter.OnLocationListener, SwipeRefreshLayout.OnRefreshListener{
+public class LocationsListFragment extends Fragment implements LocationRecyclerAdapter.OnLocationListener, SwipeRefreshLayout.OnRefreshListener {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -34,7 +34,6 @@ public class LocationsListFragment extends Fragment implements LocationRecyclerA
 
 
     public LocationsListFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -47,7 +46,7 @@ public class LocationsListFragment extends Fragment implements LocationRecyclerA
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_locations_list, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);

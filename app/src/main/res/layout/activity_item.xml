@@ -35,41 +35,41 @@
         android:id="@+id/item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="22sp"/>
+        android:textSize="22sp" />
 
     <TextView
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/location"
-        android:textSize="22sp"/>
+        android:textSize="22sp" />
 
     <TextView
         android:id="@+id/type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/type"
-        android:textSize="22sp"/>
+        android:textSize="22sp" />
 
     <TextView
         android:id="@+id/is_working"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/is_working"
-        android:textSize="22sp"/>
+        android:textSize="22sp" />
 
     <TextView
         android:id="@+id/purchase_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/purchase_date"
-        android:textSize="22sp"/>
+        android:textSize="22sp" />
 
     <TextView
         android:id="@+id/history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/history"
-        android:textSize="22sp"/>
+        android:textSize="22sp" />
 
 </LinearLayout>

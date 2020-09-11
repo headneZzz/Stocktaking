@@ -3,18 +3,18 @@ package ru.gosarhro.stocktaking.item;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Action implements Serializable {
+public class ItemAction implements Serializable {
     private String action;
     private String actionee;
     private Date actionDate;
 
-    public Action(String action, String actionee, Date actionDate) {
+    public ItemAction(String action, String actionee, Date actionDate) {
         this.action = action;
         this.actionee = actionee;
         this.actionDate = actionDate;
     }
 
-    public Action() {
+    public ItemAction() {
     }
 
     public String getAction() {

@@ -19,14 +19,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import ru.gosarhro.stocktaking.R;
 
 public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapter.ViewHolder> implements Filterable {
-    private List<Item> itemListTemp;
+    private List<Item> itemListFiltered;
     private List<Item> itemListFull;
     private OnItemListener onItemListener;
+    private String filterQuery;
 
     public ItemRecyclerAdapter(List<Item> itemListFull, OnItemListener onItemListener) {
         this.itemListFull = itemListFull;
-        this.itemListTemp = new ArrayList<>(this.itemListFull);
+        this.itemListFiltered = new ArrayList<>(this.itemListFull);
         this.onItemListener = onItemListener;
+        this.filterQuery = null;
     }
 
     @NonNull
@@ -38,7 +40,12 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Item item = itemListTemp.get(position);
+        Item item;
+        if (filterQuery == null) {
+            item = itemListFull.get(position);
+        } else {
+            item = itemListFiltered.get(position);
+        }
         holder.idTextView.setText(item.getId());
         holder.nameTextView.setText(item.getName());
         item.setIconImage(holder.icon);
@@ -48,7 +55,10 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return itemListTemp.size();
+        if (filterQuery == null)
+            return itemListFull.size();
+        else
+            return itemListFiltered.size();
     }
 
     @Override
@@ -60,11 +70,10 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Item> filteredList = new ArrayList<>();
-
             if (constraint != null && constraint.length() != 0) {
-                String filteredPattern = constraint.toString().trim().toLowerCase();
+                filterQuery = constraint.toString().trim().toLowerCase();
                 for (Item item : itemListFull) {
-                    if (item.getId().toLowerCase().contains(filteredPattern)) {
+                    if (item.getId().toLowerCase().contains(filterQuery)) {
                         filteredList.add(item);
                     }
                 }
@@ -78,13 +87,13 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            itemListTemp.clear();
-            itemListTemp.addAll((List) results.values);
+            itemListFiltered.clear();
+            itemListFiltered.addAll((List) results.values);
             notifyDataSetChanged();
         }
     };
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CardView cardView;
         TextView idTextView;
         TextView nameTextView;
@@ -98,13 +107,12 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
             nameTextView = itemView.findViewById(R.id.text_list_item_name);
             icon = itemView.findViewById(R.id.image_view);
             this.onItemListener = onItemListener;
-            itemView.setOnLongClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
-        public boolean onLongClick(View v) {
+        public void onClick(View v) {
             onItemListener.onItemClick(getAdapterPosition());
-            return true;
         }
     }
 

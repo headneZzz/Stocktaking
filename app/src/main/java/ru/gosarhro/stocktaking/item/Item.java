@@ -22,13 +22,13 @@ public class Item implements Serializable {
     private String name;
     private Date purchaseDate;
     private boolean isWorking;
-    private List<Action> history;
+    private List<ItemAction> history;
     private boolean isChecked;
 
     public Item() {
     }
 
-    public Item(String id, String type, int location, String name, Date purchaseDate, boolean isWorking, List<Action> history) {
+    public Item(String id, String type, int location, String name, Date purchaseDate, boolean isWorking, List<ItemAction> history) {
         this.id = id;
         this.type = ItemType.valueOf(type);
         this.location = location;
@@ -110,11 +110,11 @@ public class Item implements Serializable {
         isWorking = working;
     }
 
-    public List<Action> getHistory() {
+    public List<ItemAction> getHistory() {
         return history;
     }
 
-    public void setHistory(List<Action> history) {
+    public void setHistory(List<ItemAction> history) {
         this.history = history;
     }
 

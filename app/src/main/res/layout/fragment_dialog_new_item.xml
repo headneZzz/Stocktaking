@@ -1,17 +1,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="10dp">
 
     <EditText
         android:id="@+id/item_id_text"
-        android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="12dp"
-        android:hint="@string/dialog_new_item_hint"/>
+        android:hint="@string/dialog_new_item_hint"
+        android:inputType="text" />
 </LinearLayout>
