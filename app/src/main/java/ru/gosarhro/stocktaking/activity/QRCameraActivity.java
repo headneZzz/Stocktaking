@@ -88,7 +88,7 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
                                     items.add(item);
                                     Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
                                     Toast.makeText(getApplicationContext(), itemId + " добавлен в кабинет " + location, Toast.LENGTH_LONG).show();
-                                 });
+                                });
                                 builder.setNegativeButton("Отмена", (dialog, which) -> {
                                     dialog.cancel();
                                 });

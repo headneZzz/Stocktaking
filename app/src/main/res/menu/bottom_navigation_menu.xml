@@ -4,13 +4,13 @@
     <item
         android:id="@+id/nav_locations"
         android:icon="@drawable/ic_baseline_format_list_numbered"
-        android:title="Кабинеты"
+        android:title="@string/locations"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/nav_search"
         android:icon="@drawable/ic_search"
-        android:title="Поиск"
+        android:title="@string/search"
         app:showAsAction="ifRoom"/>
 
 </menu>

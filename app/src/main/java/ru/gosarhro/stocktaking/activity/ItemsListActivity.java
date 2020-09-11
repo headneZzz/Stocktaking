@@ -12,12 +12,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +34,7 @@ import ru.gosarhro.stocktaking.item.ItemRecyclerAdapter;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.fragment.NewItemDialogFragment;
 import ru.gosarhro.stocktaking.item.Item;
+import ru.gosarhro.stocktaking.location.LocationStatus;
 
 public class ItemsListActivity extends AppCompatActivity
         implements ItemRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {
@@ -115,10 +118,10 @@ public class ItemsListActivity extends AppCompatActivity
                                         Item itemFromDb = result.toObject(Item.class);
                                         itemFromDb.setChecked((Boolean) itemEntry.getValue());
                                         items.add(itemFromDb);
-                                        adapter.getFilter().filter(null);
+                                        Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
                                     });
                         }
-                        Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
+                        adapter.notifyDataSetChanged();
                     } else {
                         Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
                         toast.show();
@@ -145,11 +148,11 @@ public class ItemsListActivity extends AppCompatActivity
                         if (finalIsLocationFullChecked) {
                             db.collection("locations")
                                     .document(String.valueOf(location))
-                                    .update("status", "OK");
+                                    .update("status", LocationStatus.OK);
                         } else {
                             db.collection("locations")
                                     .document(String.valueOf(location))
-                                    .update("status", "LACK");
+                                    .update("status", LocationStatus.NOT_ENOUGH);
                         }
                         Toast.makeText(getApplicationContext(), "Данные отправлены", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));

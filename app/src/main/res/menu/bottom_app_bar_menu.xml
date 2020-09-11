@@ -4,17 +4,17 @@
     <item
         android:id="@+id/app_bar_add"
         android:icon="@drawable/ic_baseline_add"
-        android:title="Добавить"
+        android:title="@string/add"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/app_bar_camera"
         android:icon="@drawable/ic_camera_black"
-        android:title="QR-камера"
+        android:title="@string/qr_camera"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/app_bar_send"
         android:icon="@drawable/ic_baseline_send"
-        android:title="Отправить"
+        android:title="@string/send"
         app:showAsAction="ifRoom"/>
 
 </menu>

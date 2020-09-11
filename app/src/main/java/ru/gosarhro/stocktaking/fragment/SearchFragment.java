@@ -125,6 +125,7 @@ public class SearchFragment extends Fragment implements ItemRecyclerAdapter.OnIt
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
+        searchItem.expandActionView();
     }
 
     @Override

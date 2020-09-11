@@ -41,7 +41,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Item item;
-        if (filterQuery == null) {
+        if (filterQuery == null || filterQuery.length() == 0) {
             item = itemListFull.get(position);
         } else {
             item = itemListFiltered.get(position);
@@ -55,7 +55,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        if (filterQuery == null)
+        if (filterQuery == null || filterQuery.length() == 0)
             return itemListFull.size();
         else
             return itemListFiltered.size();

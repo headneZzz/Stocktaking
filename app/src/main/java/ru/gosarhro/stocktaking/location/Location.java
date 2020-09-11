@@ -25,15 +25,13 @@ public class Location {
     public void setIconImage(ImageView icon) {
         switch (status) {
             case NOT_CHECKED:
-                icon.setVisibility(View.INVISIBLE);
+                icon.setImageResource(R.drawable.ic_location_not_checked);
                 break;
             case OK:
-                icon.setVisibility(View.VISIBLE);
-                icon.setImageResource(R.drawable.ic_baseline_check);
+                icon.setImageResource(R.drawable.ic_location_ok);
                 break;
-            case LACK:
-                icon.setVisibility(View.VISIBLE);
-                icon.setImageResource(R.drawable.ic_baseline_close);
+            case NOT_ENOUGH:
+                icon.setImageResource(R.drawable.ic_location_not_enough);
                 break;
         }
     }

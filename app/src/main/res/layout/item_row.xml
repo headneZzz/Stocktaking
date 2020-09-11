@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_row_card"
     android:layout_width="match_parent"
@@ -8,14 +8,16 @@
     android:layout_marginTop="4dp"
     android:layout_marginRight="16dp"
     android:layout_marginBottom="4dp"
-    android:background="@android:color/white"
-    app:cardCornerRadius="4dp">
+    android:foregroundTint="@android:color/white"
+    app:cardCornerRadius="10dp"
+    app:contentPadding="5dp"
+    app:strokeColor="@android:color/black"
+    app:strokeWidth="1dp">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/image_view"
@@ -44,8 +46,9 @@
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@+id/image_view"
             android:text="Line 2"
+            android:textColor="@android:color/black"
             android:textSize="15sp" />
     </RelativeLayout>
 
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
