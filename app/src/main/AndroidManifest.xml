@@ -7,23 +7,22 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name="ru.gosarhro.stocktaking.activity.LoginActivity"/>
+        <activity android:name="ru.gosarhro.stocktaking.activity.LoginActivity" />
         <activity android:name="ru.gosarhro.stocktaking.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ru.gosarhro.stocktaking.activity.ItemsListActivity"/>
+        <activity android:name="ru.gosarhro.stocktaking.activity.ItemsListActivity" />
         <activity android:name="ru.gosarhro.stocktaking.activity.ItemActivity" />
         <activity android:name="ru.gosarhro.stocktaking.activity.QRCameraActivity" />
     </application>

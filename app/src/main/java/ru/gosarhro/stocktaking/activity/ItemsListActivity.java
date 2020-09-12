@@ -119,9 +119,9 @@ public class ItemsListActivity extends AppCompatActivity
                                         itemFromDb.setChecked((Boolean) itemEntry.getValue());
                                         items.add(itemFromDb);
                                         Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
+                                        adapter.getFilter().filter(null);
                                     });
                         }
-                        adapter.notifyDataSetChanged();
                     } else {
                         Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
                         toast.show();

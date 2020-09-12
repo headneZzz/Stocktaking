@@ -14,7 +14,7 @@ import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.fragment.LocationsListFragment;
 import ru.gosarhro.stocktaking.fragment.SearchFragment;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

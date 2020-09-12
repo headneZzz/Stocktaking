@@ -22,13 +22,11 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     private List<Item> itemListFiltered;
     private List<Item> itemListFull;
     private OnItemListener onItemListener;
-    private String filterQuery;
 
     public ItemRecyclerAdapter(List<Item> itemListFull, OnItemListener onItemListener) {
         this.itemListFull = itemListFull;
         this.itemListFiltered = new ArrayList<>(this.itemListFull);
         this.onItemListener = onItemListener;
-        this.filterQuery = null;
     }
 
     @NonNull
@@ -41,11 +39,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Item item;
-        if (filterQuery == null || filterQuery.length() == 0) {
-            item = itemListFull.get(position);
-        } else {
-            item = itemListFiltered.get(position);
-        }
+        item = itemListFiltered.get(position);
         holder.idTextView.setText(item.getId());
         holder.nameTextView.setText(item.getName());
         item.setIconImage(holder.icon);
@@ -55,10 +49,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        if (filterQuery == null || filterQuery.length() == 0)
-            return itemListFull.size();
-        else
-            return itemListFiltered.size();
+        return itemListFiltered.size();
     }
 
     @Override
@@ -71,7 +62,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Item> filteredList = new ArrayList<>();
             if (constraint != null && constraint.length() != 0) {
-                filterQuery = constraint.toString().trim().toLowerCase();
+                String filterQuery = constraint.toString().trim().toLowerCase();
                 for (Item item : itemListFull) {
                     if (item.getId().toLowerCase().contains(filterQuery)) {
                         filteredList.add(item);

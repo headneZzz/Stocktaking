@@ -3,7 +3,6 @@ package ru.gosarhro.stocktaking.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,12 +24,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.activity.ItemActivity;
 import ru.gosarhro.stocktaking.item.Item;
@@ -36,8 +34,6 @@ import static android.app.Activity.RESULT_OK;
 public class SearchFragment extends Fragment implements ItemRecyclerAdapter.OnItemListener {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Item> items = new ArrayList<>();
-    private List<String> itemIds = new ArrayList<>();
-    private RecyclerView recyclerView;
     private ItemRecyclerAdapter adapter = new ItemRecyclerAdapter(items, this);
     private MenuItem searchItem;
     private SearchView searchView;
@@ -50,6 +46,7 @@ public class SearchFragment extends Fragment implements ItemRecyclerAdapter.OnIt
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        getItemsFromDb();
     }
 
     @Override
@@ -59,41 +56,25 @@ public class SearchFragment extends Fragment implements ItemRecyclerAdapter.OnIt
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.search);
-        recyclerView = view.findViewById(R.id.items_list);
+        RecyclerView recyclerView = view.findViewById(R.id.items_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        getItemIdsFromDb();
         return view;
     }
 
-    public void getItemIdsFromDb() {
-        itemIds.clear();
-        db.collection("search")
-                .document("items")
+    public void getItemsFromDb() {
+        items.clear();
+        db.collection("items")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        itemIds.addAll((List<String>) task.getResult().get("ids"));
+                        items.addAll(task.getResult().toObjects(Item.class));
+                        adapter.getFilter().filter(null);
                     } else {
                         Toast toast = Toast.makeText(getContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 });
-    }
-
-    public void getItemsByIds(List<String> newItemIds) {
-        items.clear();
-        for (String itemId : newItemIds) {
-            db.collection("items")
-                    .document(itemId)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            items.add(task.getResult().toObject(Item.class));
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
-        }
     }
 
     @Override
@@ -109,23 +90,16 @@ public class SearchFragment extends Fragment implements ItemRecyclerAdapter.OnIt
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                List<String> newItemIds = new ArrayList<>();
-                for (String itemId : itemIds) {
-                    if (itemId.contains(query)) {
-                        newItemIds.add(itemId);
-                    }
-                }
-                getItemsByIds(newItemIds);
-                return true;
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
                 return false;
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
-        searchItem.expandActionView();
     }
 
     @Override

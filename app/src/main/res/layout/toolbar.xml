@@ -4,10 +4,9 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
+    android:background="@android:color/white"
     android:minHeight="?attr/actionBarSize"
     android:theme="?attr/actionBarTheme"
-    app:collapseIcon="@drawable/ic_arrow_back"
-    app:titleTextColor="@color/colorPrimaryDark">
+    app:collapseIcon="@drawable/ic_arrow_back">
 
 </androidx.appcompat.widget.Toolbar>
