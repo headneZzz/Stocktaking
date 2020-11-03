@@ -147,7 +147,9 @@ public class ItemsListActivity extends AppCompatActivity
             foundedItemIdsMap.put(item.getId(), item.isChecked());
         }
         boolean finalIsLocationFullChecked = isLocationFullChecked;
-        db.collection(currentCollectionName)
+        db.collection("current")
+                .document("stocktaking")
+                .collection(currentCollectionName)
                 .document(String.valueOf(location))
                 .update("items", foundedItemIdsMap)
                 .addOnCompleteListener(task -> {
