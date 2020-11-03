@@ -46,7 +46,6 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         holder.cardView.setCardBackgroundColor(item.isChecked() ? holder.itemView.getContext().getResources().getColor(R.color.colorAccent2) : Color.WHITE);
     }
 
-
     @Override
     public int getItemCount() {
         return itemListFiltered.size();
@@ -64,8 +63,15 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
             if (constraint != null && constraint.length() != 0) {
                 String filterQuery = constraint.toString().trim().toLowerCase();
                 for (Item item : itemListFull) {
-                    if (item.getId().toLowerCase().contains(filterQuery)) {
+                    if (item.getId().toLowerCase().contains(filterQuery) || item.getType().toLowerCase().contains(filterQuery)) {
                         filteredList.add(item);
+                    }
+                    try {
+                        if (item.getName().toLowerCase().contains(filterQuery)) {
+                            filteredList.add(item);
+                        }
+                    } catch (NullPointerException ignored) {
+
                     }
                 }
             } else {
@@ -79,17 +85,16 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             itemListFiltered.clear();
-            itemListFiltered.addAll((List) results.values);
+            if (results.values != null) itemListFiltered.addAll((List) results.values);
             notifyDataSetChanged();
         }
     };
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView idTextView;
         TextView nameTextView;
         ImageView icon;
-        OnItemListener onItemListener;
 
         ViewHolder(View itemView, OnItemListener onItemListener) {
             super(itemView);
@@ -97,17 +102,20 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
             idTextView = itemView.findViewById(R.id.text_list_item_id);
             nameTextView = itemView.findViewById(R.id.text_list_item_name);
             icon = itemView.findViewById(R.id.image_view);
-            this.onItemListener = onItemListener;
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            onItemListener.onItemClick(getAdapterPosition());
+            itemView.setOnClickListener(v -> {
+                int position = itemListFull.indexOf(itemListFiltered.get(getAdapterPosition()));
+                onItemListener.onItemClick(position);
+            });
+            itemView.setOnLongClickListener(v -> {
+                int position = itemListFull.indexOf(itemListFiltered.get(getAdapterPosition()));
+                onItemListener.onItemLongClick(position);
+                return true;
+            });
         }
     }
 
     public interface OnItemListener {
         void onItemClick(int position);
+        void onItemLongClick(int position);
     }
 }

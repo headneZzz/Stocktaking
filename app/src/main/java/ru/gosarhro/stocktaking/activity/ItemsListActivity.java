@@ -9,37 +9,32 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.gosarhro.stocktaking.item.ItemRecyclerAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.fragment.NewItemDialogFragment;
 import ru.gosarhro.stocktaking.item.Item;
+import ru.gosarhro.stocktaking.item.ItemRecyclerAdapter;
 import ru.gosarhro.stocktaking.location.LocationStatus;
 
 public class ItemsListActivity extends AppCompatActivity
         implements ItemRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String currentCollectionName = new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis()));
+    String currentCollectionName = "";
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     private SearchView searchView;
@@ -92,6 +87,10 @@ public class ItemsListActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(int position) {
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
         items.get(position).setChecked(!items.get(position).isChecked());
         adapter.notifyDataSetChanged();
     }
@@ -102,31 +101,39 @@ public class ItemsListActivity extends AppCompatActivity
     }
 
     public void getItemsFromDb() {
-        items.clear();
-        Map<String, Boolean> foundedItemIdsMap = new HashMap<>();
-        db.collection(currentCollectionName)
-                .document(String.valueOf(location))
+        db.collection("current")
+                .document("stocktaking")
                 .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult().get("items") != null) {
-                        foundedItemIdsMap.putAll((Map<String, Boolean>) task.getResult().get("items"));
-                        for (Map.Entry itemEntry : foundedItemIdsMap.entrySet()) {
-                            db.collection("items")
-                                    .document((String) itemEntry.getKey())
-                                    .get()
-                                    .addOnSuccessListener(result -> {
-                                        Item itemFromDb = result.toObject(Item.class);
-                                        itemFromDb.setChecked((Boolean) itemEntry.getValue());
-                                        items.add(itemFromDb);
-                                        Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
-                                        adapter.getFilter().filter(null);
-                                    });
-                        }
-                    } else {
-                        Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                    swipeRefreshLayout.setRefreshing(false);
+                .addOnSuccessListener(documentSnapshot -> {
+                    currentCollectionName = (String) documentSnapshot.get("date");
+                    items.clear();
+                    Map<String, Boolean> foundedItemIdsMap = new HashMap<>();
+                    db.collection("current")
+                            .document("stocktaking")
+                            .collection(currentCollectionName)
+                            .document(String.valueOf(location))
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful() && task.getResult().get("items") != null) {
+                                    foundedItemIdsMap.putAll((Map<String, Boolean>) task.getResult().get("items"));
+                                    for (Map.Entry itemEntry : foundedItemIdsMap.entrySet()) {
+                                        db.collection("items")
+                                                .document((String) itemEntry.getKey())
+                                                .get()
+                                                .addOnSuccessListener(result -> {
+                                                    Item itemFromDb = result.toObject(Item.class);
+                                                    itemFromDb.setChecked((Boolean) itemEntry.getValue());
+                                                    items.add(itemFromDb);
+                                                    Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
+                                                    adapter.getFilter().filter(null);
+                                                });
+                                    }
+                                } else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                                swipeRefreshLayout.setRefreshing(false);
+                            });
                 });
     }
 

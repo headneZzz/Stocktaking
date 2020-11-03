@@ -5,16 +5,40 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.fragment.LocationsListFragment;
 import ru.gosarhro.stocktaking.fragment.SearchFragment;
 
 public class MainActivity extends AppCompatActivity {
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {
+        switch (menuItem.getItemId()) {
+            case R.id.nav_locations:
+                if (getSupportFragmentManager().findFragmentByTag("one") != null) {
+                    getSupportFragmentManager().beginTransaction().show(getSupportFragmentManager().findFragmentByTag("one")).commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new LocationsListFragment(), "one").commit();
+                }
+                if (getSupportFragmentManager().findFragmentByTag("two") != null) {
+                    getSupportFragmentManager().beginTransaction().hide(getSupportFragmentManager().findFragmentByTag("two")).commit();
+                }
+                break;
+            case R.id.nav_search:
+                if (getSupportFragmentManager().findFragmentByTag("two") != null) {
+                    getSupportFragmentManager().beginTransaction().show(getSupportFragmentManager().findFragmentByTag("two")).commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new SearchFragment(), "two").commit();
+                }
+                if (getSupportFragmentManager().findFragmentByTag("one") != null) {
+                    getSupportFragmentManager().beginTransaction().hide(getSupportFragmentManager().findFragmentByTag("one")).commit();
+                }
+                break;
+        }
+        return true;
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,23 +52,10 @@ public class MainActivity extends AppCompatActivity {
             BottomNavigationView bottomNav = findViewById(R.id.bottom_nav_bar);
             bottomNav.setOnNavigationItemSelectedListener(navListener);
             if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new LocationsListFragment()).commit();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, new LocationsListFragment(), "one")
+                        .commit();
             }
         }
     }
-
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {
-        Fragment selectedFragment = null;
-        switch (menuItem.getItemId()) {
-            case R.id.nav_locations:
-                selectedFragment = new LocationsListFragment();
-                break;
-            case R.id.nav_search:
-                selectedFragment = new SearchFragment();
-                break;
-        }
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
-        return true;
-    };
 }
