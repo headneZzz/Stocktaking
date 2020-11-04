@@ -67,6 +67,7 @@ public class LocationsListFragment extends Fragment implements LocationRecyclerA
                     if (task.isSuccessful()) {
                         locations.addAll(task.getResult().toObjects(Location.class));
                         Collections.sort(locations, (o1, o2) -> o1.getId() - o2.getId());
+                        locations.remove(0);
                         adapter.notifyDataSetChanged();
                     } else {
                         Toast toast = Toast.makeText(getContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);

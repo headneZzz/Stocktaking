@@ -13,8 +13,8 @@
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/app_bar_send"
-        android:icon="@drawable/ic_baseline_send"
-        android:title="@string/send"
+        android:icon="@drawable/ic_baseline_save"
+        android:title="@string/save"
         app:showAsAction="ifRoom"/>
 
 </menu>

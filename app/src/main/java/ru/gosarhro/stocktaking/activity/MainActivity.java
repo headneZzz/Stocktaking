@@ -13,6 +13,10 @@ import ru.gosarhro.stocktaking.fragment.LocationsListFragment;
 import ru.gosarhro.stocktaking.fragment.SearchFragment;
 
 public class MainActivity extends AppCompatActivity {
+    static final String PREF = "pref";
+    static final String USERNAME = "username";
+    static final String PASSWORD = "password";
+    static final String IS_FIRST_LAUNCH = "is_first";
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {
         switch (menuItem.getItemId()) {
@@ -44,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SharedPreferences sPref = getSharedPreferences(LoginActivity.LOGIN_PREF, MODE_PRIVATE);
-        if (!sPref.contains(LoginActivity.USERNAME)) {
+        SharedPreferences sPref = getSharedPreferences(PREF, MODE_PRIVATE);
+        if (!sPref.contains(USERNAME)) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         } else {

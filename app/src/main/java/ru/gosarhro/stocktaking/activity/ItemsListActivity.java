@@ -2,6 +2,7 @@ package ru.gosarhro.stocktaking.activity;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,6 +33,9 @@ import ru.gosarhro.stocktaking.item.Item;
 import ru.gosarhro.stocktaking.item.ItemRecyclerAdapter;
 import ru.gosarhro.stocktaking.location.LocationStatus;
 
+import static ru.gosarhro.stocktaking.activity.MainActivity.IS_FIRST_LAUNCH;
+import static ru.gosarhro.stocktaking.activity.MainActivity.PREF;
+
 public class ItemsListActivity extends AppCompatActivity
         implements ItemRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -43,6 +48,7 @@ public class ItemsListActivity extends AppCompatActivity
     static List<Item> items = new ArrayList<>();
     private ItemRecyclerAdapter adapter = new ItemRecyclerAdapter(items, this);
     private final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+    ShowcaseView temp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +67,30 @@ public class ItemsListActivity extends AppCompatActivity
         recyclerView.setAdapter(adapter);
         getItemsFromDb();
         swipeRefreshLayout.setRefreshing(true);
+
+        SharedPreferences settings = getSharedPreferences(PREF, 0);
+        boolean isFirst = settings.getBoolean(IS_FIRST_LAUNCH, true);
+        if (isFirst) {
+            settings.edit().putBoolean(IS_FIRST_LAUNCH, false).apply();
+            showTips();
+        }
+    }
+
+    private void showTips() {
+        temp = new ShowcaseView.Builder(this)
+                .setContentTitle("Подсказки")
+                .setContentText("\n1. Зажмите предмет, чтобы отметить его в списке\n\n" +
+                        "2. Если предмета нет в списке, то его можно добавить, сканировав QR код или нажав левую кнопку внизу. Добавить можно только предмет, который уже есть в базе.")
+                .setStyle(R.style.CustomShowcaseTheme).setOnClickListener(v -> {
+                    temp.hide();
+                    new ShowcaseView.Builder(this)
+                            .setContentTitle("Подсказки")
+                            .setContentText("\n3. Если в кабинете нет предмета, который есть в этом списке, то просто не отмечайте его\n\n" +
+                                    "4. Нажмите \"Сохранить\", чтобы сохранить список в общей базе")
+                            .setStyle(R.style.CustomShowcaseTheme)
+                            .build();
+                })
+                .build();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {

@@ -11,7 +11,7 @@
     android:foregroundTint="@android:color/white"
     app:cardCornerRadius="10dp"
     app:contentPadding="5dp"
-    app:strokeColor="@android:color/black"
+    app:strokeColor="@android:color/transparent"
     app:strokeWidth="1dp">
 
 

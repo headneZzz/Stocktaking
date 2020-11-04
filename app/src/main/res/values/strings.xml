@@ -8,7 +8,7 @@
     <string name="prompt_password">Пароль</string>
     <string name="action_sign_in">Войти</string>
 
-    <string name="dialog_new_item_title">Добавление предмета в кабинет</string>
+    <string name="dialog_new_item_title">Добавление предмета из базы в кабинет</string>
     <string name="dialog_new_item_hint">Инвентарник</string>
 
     <string name="add">Добавить</string>
@@ -16,7 +16,7 @@
     <string name="search">Поиск</string>
     <string name="locations">Кабинеты</string>
     <string name="qr_camera">QR-камера</string>
-    <string name="send">Отправить</string>
+    <string name="save">Сохранить</string>
 
     <string name="location">"Кабинет "</string>
     <string name="type">"Тип: "</string>

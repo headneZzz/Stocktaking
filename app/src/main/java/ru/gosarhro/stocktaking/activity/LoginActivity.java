@@ -13,13 +13,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import ru.gosarhro.stocktaking.R;
 
+import static ru.gosarhro.stocktaking.activity.MainActivity.PASSWORD;
+import static ru.gosarhro.stocktaking.activity.MainActivity.PREF;
+import static ru.gosarhro.stocktaking.activity.MainActivity.USERNAME;
+
 public class LoginActivity extends AppCompatActivity {
     static SharedPreferences sPref;
     private EditText usernameEditText;
     private EditText passwordEditText;
-    public static final String LOGIN_PREF = "pref";
-    static final String USERNAME = "username";
-    static final String PASSWORD = "password";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             if (task.getResult() != null && password.equals(task.getResult().get(PASSWORD))) {
-                                sPref = getSharedPreferences(LOGIN_PREF, MODE_PRIVATE);
+                                sPref = getSharedPreferences(PREF, MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sPref.edit();
                                 editor.putString(USERNAME, username);
                                 editor.putString(PASSWORD, password);
