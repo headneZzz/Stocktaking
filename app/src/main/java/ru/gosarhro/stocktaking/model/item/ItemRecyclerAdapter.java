@@ -1,4 +1,4 @@
-package ru.gosarhro.stocktaking.item;
+package ru.gosarhro.stocktaking.model.item;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -43,7 +43,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
         holder.idTextView.setText(item.getId());
         holder.nameTextView.setText(item.getName());
         item.setIconImage(holder.icon);
-        holder.cardView.setCardBackgroundColor(item.isChecked() ? holder.itemView.getContext().getResources().getColor(R.color.colorAccent2) : Color.WHITE);
+        holder.cardView.setCardBackgroundColor(item.isFound() ? holder.itemView.getContext().getResources().getColor(R.color.colorAccent2) : Color.WHITE);
     }
 
     @Override

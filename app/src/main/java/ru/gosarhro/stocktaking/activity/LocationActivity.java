@@ -14,6 +14,7 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,14 +30,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.fragment.NewItemDialogFragment;
-import ru.gosarhro.stocktaking.item.Item;
-import ru.gosarhro.stocktaking.item.ItemRecyclerAdapter;
-import ru.gosarhro.stocktaking.location.LocationStatus;
+import ru.gosarhro.stocktaking.model.item.Item;
+import ru.gosarhro.stocktaking.model.item.ItemRecyclerAdapter;
+import ru.gosarhro.stocktaking.model.location.LocationStatus;
 
 import static ru.gosarhro.stocktaking.activity.MainActivity.IS_FIRST_LAUNCH;
 import static ru.gosarhro.stocktaking.activity.MainActivity.PREF;
 
-public class ItemsListActivity extends AppCompatActivity
+public class LocationActivity extends AppCompatActivity
         implements ItemRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String currentCollectionName = "";
@@ -53,7 +54,7 @@ public class ItemsListActivity extends AppCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_items_list);
+        setContentView(R.layout.activity_cabinet);
         location = getIntent().getIntExtra("location", 0);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -100,10 +101,15 @@ public class ItemsListActivity extends AppCompatActivity
                 dialogFragment.show(getSupportFragmentManager(), "NewItem");
                 break;
             case R.id.app_bar_camera:
-                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class).putExtra("location", location));
+                Bundle bundle = new Bundle();
+                bundle.putString("currentCollectionName", currentCollectionName);
+                bundle.putInt("location", location);
+                startActivity(new Intent(getApplicationContext(), QRCameraActivity.class).putExtras(bundle));
                 break;
             case R.id.app_bar_send:
                 saveItemsInDb();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
                 break;
         }
         return true;
@@ -121,7 +127,7 @@ public class ItemsListActivity extends AppCompatActivity
 
     @Override
     public void onItemLongClick(int position) {
-        items.get(position).setChecked(!items.get(position).isChecked());
+        items.get(position).setFound(!items.get(position).isFound());
         adapter.notifyDataSetChanged();
     }
 
@@ -131,75 +137,56 @@ public class ItemsListActivity extends AppCompatActivity
     }
 
     public void getItemsFromDb() {
+        items.clear();
         db.collection("current")
                 .document("stocktaking")
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     currentCollectionName = (String) documentSnapshot.get("date");
-                    items.clear();
                     Map<String, Boolean> foundedItemIdsMap = new HashMap<>();
                     db.collection("current")
                             .document("stocktaking")
                             .collection(currentCollectionName)
-                            .document(String.valueOf(location))
+                            .whereEqualTo("location", location)
                             .get()
                             .addOnCompleteListener(task -> {
-                                if (task.isSuccessful() && task.getResult().get("items") != null) {
-                                    foundedItemIdsMap.putAll((Map<String, Boolean>) task.getResult().get("items"));
-                                    for (Map.Entry itemEntry : foundedItemIdsMap.entrySet()) {
-                                        db.collection("items")
-                                                .document((String) itemEntry.getKey())
-                                                .get()
-                                                .addOnSuccessListener(result -> {
-                                                    Item itemFromDb = result.toObject(Item.class);
-                                                    itemFromDb.setChecked((Boolean) itemEntry.getValue());
-                                                    items.add(itemFromDb);
-                                                    Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
-                                                    adapter.getFilter().filter(null);
-                                                });
-                                    }
+                                if (task.isSuccessful()) {
+                                    items.addAll(task.getResult().toObjects(Item.class));
+                                    Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
+                                    adapter.getFilter().filter(null);
+                                    swipeRefreshLayout.setRefreshing(false);
                                 } else {
                                     Toast toast = Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT);
                                     toast.show();
                                 }
-                                swipeRefreshLayout.setRefreshing(false);
                             });
                 });
     }
 
     private void saveItemsInDb() {
         boolean isLocationFullChecked = true;
-        Map<String, Boolean> foundedItemIdsMap = new HashMap<>();
         for (Item item : items) {
-            if (isLocationFullChecked && !item.isChecked()) {
-                isLocationFullChecked = false;
-            }
-            foundedItemIdsMap.put(item.getId(), item.isChecked());
+            if (!item.isFound()) isLocationFullChecked = false;
+            db.collection("current")
+                    .document("stocktaking")
+                    .collection(currentCollectionName)
+                    .document(item.getId())
+                    .update(
+                            "found", item.isFound(),
+                            "location", item.getLocation()
+                    )
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT).show());
         }
-        boolean finalIsLocationFullChecked = isLocationFullChecked;
-        db.collection("current")
-                .document("stocktaking")
-                .collection(currentCollectionName)
-                .document(String.valueOf(location))
-                .update("items", foundedItemIdsMap)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (finalIsLocationFullChecked) {
-                            db.collection("locations")
-                                    .document(String.valueOf(location))
-                                    .update("status", LocationStatus.OK);
-                        } else {
-                            db.collection("locations")
-                                    .document(String.valueOf(location))
-                                    .update("status", LocationStatus.NOT_ENOUGH);
-                        }
-                        Toast.makeText(getApplicationContext(), "Данные отправлены", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (isLocationFullChecked) {
+            db.collection("locations")
+                    .document(String.valueOf(location))
+                    .update("status", LocationStatus.OK);
+        } else {
+            db.collection("locations")
+                    .document(String.valueOf(location))
+                    .update("status", LocationStatus.NOT_ENOUGH);
+        }
+        Toast.makeText(getApplicationContext(), "Данные отправлены", Toast.LENGTH_LONG).show();
     }
 
     static Item getItemByIdInList(String itemId) {
@@ -217,20 +204,27 @@ public class ItemsListActivity extends AppCompatActivity
         String itemId = itemIdText.getText().toString();
         Item itemInList = getItemByIdInList(itemId);
         if (itemInList != null) {
-            itemInList.setChecked(true);
+            itemInList.setFound(true);
             recyclerView.smoothScrollToPosition(items.indexOf(itemInList));
             Toast.makeText(getApplicationContext(), R.string.hint_item_already_in_list, Toast.LENGTH_SHORT).show();
         } else if (itemId.equals("")) {
             Toast.makeText(getApplicationContext(), R.string.error_empty_input, Toast.LENGTH_SHORT).show();
         } else {
-            db.collection("items")
+            db.collection("current")
+                    .document("stocktaking")
+                    .collection(currentCollectionName)
                     .document(itemId)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Item item = task.getResult().toObject(Item.class);
                             if (item != null) {
-                                item.setChecked(true);
+                                db.collection("current")
+                                        .document("stocktaking")
+                                        .collection(currentCollectionName)
+                                        .document(itemId)
+                                        .update("location", location);
+                                item.setFound(true);
                                 items.add(item);
                                 Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
                                 adapter.getFilter().filter(null);

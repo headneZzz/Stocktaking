@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ru.gosarhro.stocktaking.R;
-import ru.gosarhro.stocktaking.item.Item;
+import ru.gosarhro.stocktaking.model.item.Item;
 
 public class ItemActivity extends Activity {
     @Override

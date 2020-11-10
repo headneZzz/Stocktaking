@@ -21,11 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 import ru.gosarhro.stocktaking.R;
-import ru.gosarhro.stocktaking.activity.ItemsListActivity;
-import ru.gosarhro.stocktaking.location.Location;
-import ru.gosarhro.stocktaking.location.LocationRecyclerAdapter;
+import ru.gosarhro.stocktaking.activity.LocationActivity;
+import ru.gosarhro.stocktaking.model.location.Location;
+import ru.gosarhro.stocktaking.model.location.LocationRecyclerAdapter;
 
-public class LocationsListFragment extends Fragment implements LocationRecyclerAdapter.OnLocationListener, SwipeRefreshLayout.OnRefreshListener {
+public class StocktakingFragment extends Fragment implements LocationRecyclerAdapter.OnLocationListener, SwipeRefreshLayout.OnRefreshListener {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -33,7 +33,7 @@ public class LocationsListFragment extends Fragment implements LocationRecyclerA
     private LocationRecyclerAdapter adapter = new LocationRecyclerAdapter(locations, this);
 
 
-    public LocationsListFragment() {
+    public StocktakingFragment() {
     }
 
     @Override
@@ -79,7 +79,7 @@ public class LocationsListFragment extends Fragment implements LocationRecyclerA
 
     @Override
     public void onLocationClick(int position) {
-        startActivity(new Intent(getContext(), ItemsListActivity.class).putExtra("location", locations.get(position).getId()));
+        startActivity(new Intent(getContext(), LocationActivity.class).putExtra("location", locations.get(position).getId()));
     }
 
     @Override

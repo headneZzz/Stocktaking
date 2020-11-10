@@ -1,4 +1,4 @@
-package ru.gosarhro.stocktaking.item;
+package ru.gosarhro.stocktaking.model.item;
 
 import android.widget.ImageView;
 
@@ -23,7 +23,7 @@ public class Item implements Serializable {
     private Date purchaseDate;
     private boolean isWorking;
     private List<ItemAction> history;
-    private boolean isChecked;
+    private boolean isFound;
 
     public Item() {
     }
@@ -36,7 +36,18 @@ public class Item implements Serializable {
         this.purchaseDate = purchaseDate;
         this.isWorking = isWorking;
         this.history = history;
-        isChecked = false;
+        isFound = false;
+    }
+
+    public Item(String id, String type, int location, String name, Date purchaseDate, boolean isWorking, List<ItemAction> history, boolean isFound) {
+        this.id = id;
+        this.type = ItemType.valueOf(type);
+        this.location = location;
+        this.name = name;
+        this.purchaseDate = purchaseDate;
+        this.isWorking = isWorking;
+        this.history = history;
+        this.isFound = isFound;
     }
 
     public void setIconImage(ImageView icon) {
@@ -118,12 +129,12 @@ public class Item implements Serializable {
         this.history = history;
     }
 
-    public boolean isChecked() {
-        return isChecked;
+    public boolean isFound() {
+        return isFound;
     }
 
-    public void setChecked(boolean checked) {
-        isChecked = checked;
+    public void setFound(boolean found) {
+        isFound = found;
     }
 }
 

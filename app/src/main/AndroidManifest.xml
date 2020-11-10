@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ru.gosarhro.stocktaking.activity.ItemsListActivity" />
+        <activity android:name="ru.gosarhro.stocktaking.activity.LocationActivity" />
         <activity android:name="ru.gosarhro.stocktaking.activity.ItemActivity" />
         <activity android:name="ru.gosarhro.stocktaking.activity.QRCameraActivity" />
     </application>

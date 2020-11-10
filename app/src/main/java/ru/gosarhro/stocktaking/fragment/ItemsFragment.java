@@ -26,12 +26,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.gosarhro.stocktaking.R;
 import ru.gosarhro.stocktaking.activity.ItemActivity;
-import ru.gosarhro.stocktaking.item.Item;
-import ru.gosarhro.stocktaking.item.ItemRecyclerAdapter;
+import ru.gosarhro.stocktaking.model.item.Item;
+import ru.gosarhro.stocktaking.model.item.ItemRecyclerAdapter;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SearchFragment extends Fragment implements ItemRecyclerAdapter.OnItemListener {
+public class ItemsFragment extends Fragment implements ItemRecyclerAdapter.OnItemListener {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Item> items = new ArrayList<>();
     private ItemRecyclerAdapter adapter = new ItemRecyclerAdapter(items, this);
@@ -39,7 +39,7 @@ public class SearchFragment extends Fragment implements ItemRecyclerAdapter.OnIt
     private SearchView searchView;
     private int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
-    public SearchFragment() {
+    public ItemsFragment() {
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SearchFragment extends Fragment implements ItemRecyclerAdapter.OnIt
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.search);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.items);
         RecyclerView recyclerView = view.findViewById(R.id.items_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);

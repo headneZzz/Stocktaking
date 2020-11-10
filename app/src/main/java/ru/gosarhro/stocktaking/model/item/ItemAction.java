@@ -1,4 +1,4 @@
-package ru.gosarhro.stocktaking.item;
+package ru.gosarhro.stocktaking.model.item;
 
 import java.io.Serializable;
 import java.util.Date;

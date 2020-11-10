@@ -17,17 +17,18 @@ import java.util.Collections;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import ru.gosarhro.stocktaking.R;
-import ru.gosarhro.stocktaking.item.Item;
+import ru.gosarhro.stocktaking.model.item.Item;
 
 import static android.Manifest.permission.CAMERA;
-import static ru.gosarhro.stocktaking.activity.ItemsListActivity.getItemByIdInList;
-import static ru.gosarhro.stocktaking.activity.ItemsListActivity.items;
+import static ru.gosarhro.stocktaking.activity.LocationActivity.getItemByIdInList;
+import static ru.gosarhro.stocktaking.activity.LocationActivity.items;
 
 public class QRCameraActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView scannerView;
     private int location;
+    String currentCollectionName = "";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -36,6 +37,7 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
         scannerView = new ZXingScannerView(this);
         setContentView(scannerView);
         location = getIntent().getIntExtra("location", 0);
+        currentCollectionName = getIntent().getStringExtra("currentCollectionName");
         int currentApiVersion = Build.VERSION.SDK_INT;
         if (currentApiVersion >= Build.VERSION_CODES.M) {
             if (!checkPermission()) {
@@ -70,8 +72,14 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
         String itemId = result.getText();
         Item itemInList = getItemByIdInList(itemId);
         if (itemInList != null) {
-            items.get(items.indexOf(itemInList)).setChecked(true);
+            db.collection("current")
+                    .document("stocktaking")
+                    .collection(currentCollectionName)
+                    .document(itemId)
+                    .update("found", true);
+            items.get(items.indexOf(itemInList)).setFound(true);
             Toast.makeText(getApplicationContext(), itemId + " отмечен в списке", Toast.LENGTH_LONG).show();
+            scannerView.resumeCameraPreview(QRCameraActivity.this);
         } else {
             db.collection("items")
                     .document(itemId)
@@ -84,24 +92,35 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
                                 builder.setTitle("Новый предмет");
                                 builder.setMessage(itemId + " нет в кабинете " + location + ", но он найден в базе. Добавить его в список кабинета?");
                                 builder.setPositiveButton("Да", (dialog, which) -> {
-                                    item.setChecked(true);
+                                    db.collection("current")
+                                            .document("stocktaking")
+                                            .collection(currentCollectionName)
+                                            .document(itemId)
+                                            .update(
+                                                    "location", location,
+                                                    "found", true
+                                            );
+                                    item.setFound(true);
                                     items.add(item);
                                     Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
                                     Toast.makeText(getApplicationContext(), itemId + " добавлен в кабинет " + location, Toast.LENGTH_LONG).show();
+                                    scannerView.resumeCameraPreview(QRCameraActivity.this);
                                 });
                                 builder.setNegativeButton("Отмена", (dialog, which) -> {
                                     dialog.cancel();
+                                    scannerView.resumeCameraPreview(QRCameraActivity.this);
                                 });
                                 AlertDialog alert1 = builder.create();
                                 alert1.show();
                             } else {
                                 Toast.makeText(getApplicationContext(), R.string.error_no_item_in_db, Toast.LENGTH_SHORT).show();
+                                scannerView.resumeCameraPreview(QRCameraActivity.this);
                             }
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT).show();
+                            scannerView.resumeCameraPreview(QRCameraActivity.this);
                         }
                     });
         }
-        scannerView.resumeCameraPreview(QRCameraActivity.this);
     }
 }

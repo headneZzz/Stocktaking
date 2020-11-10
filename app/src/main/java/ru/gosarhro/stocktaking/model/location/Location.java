@@ -1,6 +1,5 @@
-package ru.gosarhro.stocktaking.location;
+package ru.gosarhro.stocktaking.model.location;
 
-import android.view.View;
 import android.widget.ImageView;
 
 import com.google.firebase.firestore.DocumentId;

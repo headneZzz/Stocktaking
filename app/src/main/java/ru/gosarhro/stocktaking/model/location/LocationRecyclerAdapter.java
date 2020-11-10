@@ -1,4 +1,4 @@
-package ru.gosarhro.stocktaking.location;
+package ru.gosarhro.stocktaking.model.location;
 
 import android.view.LayoutInflater;
 import android.view.View;

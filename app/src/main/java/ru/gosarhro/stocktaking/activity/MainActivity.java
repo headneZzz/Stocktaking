@@ -9,8 +9,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import ru.gosarhro.stocktaking.R;
-import ru.gosarhro.stocktaking.fragment.LocationsListFragment;
-import ru.gosarhro.stocktaking.fragment.SearchFragment;
+import ru.gosarhro.stocktaking.fragment.StocktakingFragment;
+import ru.gosarhro.stocktaking.fragment.ItemsFragment;
 
 public class MainActivity extends AppCompatActivity {
     static final String PREF = "pref";
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
                 if (getSupportFragmentManager().findFragmentByTag("one") != null) {
                     getSupportFragmentManager().beginTransaction().show(getSupportFragmentManager().findFragmentByTag("one")).commit();
                 } else {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new LocationsListFragment(), "one").commit();
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new StocktakingFragment(), "one").commit();
                 }
                 if (getSupportFragmentManager().findFragmentByTag("two") != null) {
                     getSupportFragmentManager().beginTransaction().hide(getSupportFragmentManager().findFragmentByTag("two")).commit();
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 if (getSupportFragmentManager().findFragmentByTag("two") != null) {
                     getSupportFragmentManager().beginTransaction().show(getSupportFragmentManager().findFragmentByTag("two")).commit();
                 } else {
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new SearchFragment(), "two").commit();
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new ItemsFragment(), "two").commit();
                 }
                 if (getSupportFragmentManager().findFragmentByTag("one") != null) {
                     getSupportFragmentManager().beginTransaction().hide(getSupportFragmentManager().findFragmentByTag("one")).commit();
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             bottomNav.setOnNavigationItemSelectedListener(navListener);
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, new LocationsListFragment(), "one")
+                        .add(R.id.fragment_container, new StocktakingFragment(), "one")
                         .commit();
             }
         }
