@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/image_view"
+            android:text="Temp id"
             android:textColor="@android:color/black"
             android:textSize="36sp"
             android:textStyle="bold" />
@@ -31,45 +33,89 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/item_name"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameTextField"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="22sp" />
+        android:layout_marginTop="20dp"
+        android:hint="Наименование">
 
-    <TextView
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/location"
-        android:textSize="22sp" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/activity_item_et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/type"
-        android:textSize="22sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/is_working"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/locationTextField"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/is_working"
-        android:textSize="22sp" />
+        android:layout_marginTop="10dp"
+        android:hint="Кабинет">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/activity_item_et_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Тип">
+
+        <AutoCompleteTextView
+            android:id="@+id/activity_item_dropdown_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <CheckBox
+        android:id="@+id/activity_item_cb_working"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Работает"
+        android:textSize="20sp" />
+
 
     <TextView
         android:id="@+id/purchase_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:text="@string/purchase_date"
-        android:textSize="22sp" />
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:text="@string/history"
-        android:textSize="22sp" />
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
 
+
+    <Button
+        android:id="@+id/activity_item_btn_save"
+        style="?attr/materialButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/save"
+        app:cornerRadius="15dp" />
 </LinearLayout>

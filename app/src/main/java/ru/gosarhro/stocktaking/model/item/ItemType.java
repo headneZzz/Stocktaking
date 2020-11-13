@@ -17,4 +17,14 @@ public enum ItemType {
     public String getType() {
         return type;
     }
+
+    static public ItemType findByType(String type) {
+        ItemType[] itemTypes = ItemType.values();
+        for (ItemType itemType : itemTypes) {
+            if (itemType.type.equals(type)) {
+                return itemType;
+            }
+        }
+        return null;
+    }
 }
