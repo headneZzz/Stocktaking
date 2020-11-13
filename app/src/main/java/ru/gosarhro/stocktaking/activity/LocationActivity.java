@@ -57,7 +57,7 @@ public class LocationActivity extends AppCompatActivity
         currentLocation = getIntent().getIntExtra("location", 0);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getResources().getString(R.string.location) + currentLocation);
+        getSupportActionBar().setTitle(getResources().getString(R.string.location) + " " + currentLocation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_app_bar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         swipeRefreshLayout = findViewById(R.id.swipe_container);

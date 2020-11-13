@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp"
     tools:context="ru.gosarhro.stocktaking.activity.ItemActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="2dp"
+        android:src="@drawable/ic_item_another_color"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/image_view"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:padding="2dp"
-            android:src="@drawable/ic_item_another_color" />
-
-        <TextView
-            android:id="@+id/id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/image_view"
-            android:text="Temp id"
-            android:textColor="@android:color/black"
-            android:textSize="36sp"
-            android:textStyle="bold" />
-
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/image_view"
+        android:text="Temp id"
+        android:textColor="@android:color/black"
+        android:textSize="37sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@+id/image_view"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameTextField"
@@ -39,7 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:hint="Наименование">
+        android:hint="@string/name"
+        app:layout_constraintTop_toBottomOf="@+id/id">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/activity_item_et_name"
@@ -54,7 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="Кабинет">
+        android:hint="@string/location"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextField">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/activity_item_et_location"
@@ -64,11 +62,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/typeDropdown"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="Тип">
+        android:hint="@string/type"
+        app:layout_constraintTop_toBottomOf="@+id/locationTextField">
 
         <AutoCompleteTextView
             android:id="@+id/activity_item_dropdown_type"
@@ -83,8 +83,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Работает"
-        android:textSize="20sp" />
+        android:text="@string/is_working"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typeDropdown" />
 
 
     <TextView
@@ -96,7 +98,8 @@
         android:paddingEnd="5dp"
         android:text="@string/purchase_date"
         android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/activity_item_cb_working" />
 
     <TextView
         android:id="@+id/history"
@@ -107,7 +110,8 @@
         android:paddingEnd="5dp"
         android:text="@string/history"
         android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/purchase_date" />
 
 
     <Button
@@ -115,7 +119,11 @@
         style="?attr/materialButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="30dp"
         android:text="@string/save"
-        app:cornerRadius="15dp" />
-</LinearLayout>
+        app:cornerRadius="15dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

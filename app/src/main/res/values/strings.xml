@@ -18,9 +18,10 @@
     <string name="qr_camera">QR-камера</string>
     <string name="save">Сохранить</string>
 
-    <string name="location">"Кабинет "</string>
-    <string name="type">"Тип: "</string>
-    <string name="is_working">"Состояние: "</string>
+    <string name="name">Наименование</string>
+    <string name="location">Кабинет</string>
+    <string name="type">Тип</string>
+    <string name="is_working">Работает</string>
     <string name="history">"История: "</string>
     <string name="purchase_date">"Дата приобритения: "</string>
 
