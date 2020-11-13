@@ -27,7 +27,7 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
 
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView scannerView;
-    private int location;
+    private int currentLocation;
     String currentCollectionName = "";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -36,7 +36,7 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
         super.onCreate(state);
         scannerView = new ZXingScannerView(this);
         setContentView(scannerView);
-        location = getIntent().getIntExtra("location", 0);
+        currentLocation = getIntent().getIntExtra("location", 0);
         currentCollectionName = getIntent().getStringExtra("currentCollectionName");
         int currentApiVersion = Build.VERSION.SDK_INT;
         if (currentApiVersion >= Build.VERSION_CODES.M) {
@@ -72,11 +72,6 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
         String itemId = result.getText();
         Item itemInList = getItemByIdInList(itemId);
         if (itemInList != null) {
-            db.collection("current")
-                    .document("stocktaking")
-                    .collection(currentCollectionName)
-                    .document(itemId)
-                    .update("found", true);
             items.get(items.indexOf(itemInList)).setFound(true);
             Toast.makeText(getApplicationContext(), itemId + " отмечен в списке", Toast.LENGTH_LONG).show();
             scannerView.resumeCameraPreview(QRCameraActivity.this);
@@ -90,20 +85,13 @@ public class QRCameraActivity extends AppCompatActivity implements ZXingScannerV
                             if (item != null) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                                 builder.setTitle("Новый предмет");
-                                builder.setMessage(itemId + " нет в кабинете " + location + ", но он найден в базе. Добавить его в список кабинета?");
+                                builder.setMessage(itemId + " нет в кабинете " + currentLocation + ", но он найден в базе. Добавить его в список кабинета?");
                                 builder.setPositiveButton("Да", (dialog, which) -> {
-                                    db.collection("current")
-                                            .document("stocktaking")
-                                            .collection(currentCollectionName)
-                                            .document(itemId)
-                                            .update(
-                                                    "location", location,
-                                                    "found", true
-                                            );
                                     item.setFound(true);
+                                    item.setLocation(currentLocation);
                                     items.add(item);
                                     Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
-                                    Toast.makeText(getApplicationContext(), itemId + " добавлен в кабинет " + location, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), itemId + " добавлен в кабинет " + currentLocation, Toast.LENGTH_LONG).show();
                                     scannerView.resumeCameraPreview(QRCameraActivity.this);
                                 });
                                 builder.setNegativeButton("Отмена", (dialog, which) -> {

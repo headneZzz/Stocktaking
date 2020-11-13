@@ -14,7 +14,6 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,7 +44,7 @@ public class LocationActivity extends AppCompatActivity
     RecyclerView recyclerView;
     private SearchView searchView;
     private MenuItem searchItem;
-    private int location;
+    private int currentLocation;
     static List<Item> items = new ArrayList<>();
     private ItemRecyclerAdapter adapter = new ItemRecyclerAdapter(items, this);
     private final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -55,10 +54,10 @@ public class LocationActivity extends AppCompatActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cabinet);
-        location = getIntent().getIntExtra("location", 0);
+        currentLocation = getIntent().getIntExtra("location", 0);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getResources().getString(R.string.location) + location);
+        getSupportActionBar().setTitle(getResources().getString(R.string.location) + currentLocation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_app_bar);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
@@ -81,7 +80,7 @@ public class LocationActivity extends AppCompatActivity
         temp = new ShowcaseView.Builder(this)
                 .setContentTitle("Подсказки")
                 .setContentText("\n1. Зажмите предмет, чтобы отметить его в списке\n\n" +
-                        "2. Если предмета нет в списке, то его можно добавить, сканировав QR код или нажав левую кнопку внизу. Добавить можно только предмет, который уже есть в базе.")
+                        "2. Если предмета нет в списке, то его можно добавить, сканировав QR код или нажав \"Добавить\" внизу. Добавить можно только предмет, который уже есть в базе.")
                 .setStyle(R.style.CustomShowcaseTheme).setOnClickListener(v -> {
                     temp.hide();
                     new ShowcaseView.Builder(this)
@@ -103,7 +102,7 @@ public class LocationActivity extends AppCompatActivity
             case R.id.app_bar_camera:
                 Bundle bundle = new Bundle();
                 bundle.putString("currentCollectionName", currentCollectionName);
-                bundle.putInt("location", location);
+                bundle.putInt("location", currentLocation);
                 startActivity(new Intent(getApplicationContext(), QRCameraActivity.class).putExtras(bundle));
                 break;
             case R.id.app_bar_send:
@@ -147,7 +146,7 @@ public class LocationActivity extends AppCompatActivity
                     db.collection("current")
                             .document("stocktaking")
                             .collection(currentCollectionName)
-                            .whereEqualTo("location", location)
+                            .whereEqualTo("location", currentLocation)
                             .get()
                             .addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
@@ -179,11 +178,11 @@ public class LocationActivity extends AppCompatActivity
         }
         if (isLocationFullChecked) {
             db.collection("locations")
-                    .document(String.valueOf(location))
+                    .document(String.valueOf(currentLocation))
                     .update("status", LocationStatus.OK);
         } else {
             db.collection("locations")
-                    .document(String.valueOf(location))
+                    .document(String.valueOf(currentLocation))
                     .update("status", LocationStatus.NOT_ENOUGH);
         }
         Toast.makeText(getApplicationContext(), "Данные отправлены", Toast.LENGTH_LONG).show();
@@ -219,12 +218,8 @@ public class LocationActivity extends AppCompatActivity
                         if (task.isSuccessful()) {
                             Item item = task.getResult().toObject(Item.class);
                             if (item != null) {
-                                db.collection("current")
-                                        .document("stocktaking")
-                                        .collection(currentCollectionName)
-                                        .document(itemId)
-                                        .update("location", location);
                                 item.setFound(true);
+                                item.setLocation(currentLocation);
                                 items.add(item);
                                 Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
                                 adapter.getFilter().filter(null);
