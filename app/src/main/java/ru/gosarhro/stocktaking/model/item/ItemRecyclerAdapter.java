@@ -40,7 +40,8 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Item item;
         item = itemListFiltered.get(position);
-        holder.idTextView.setText(item.getId());
+        String itemIdAndWorking = item.isWorking() ? item.getId() + " работает" : item.getId() + " списан";
+        holder.idTextView.setText(itemIdAndWorking);
         holder.nameTextView.setText(item.getName());
         item.setIconImage(holder.icon);
         holder.cardView.setCardBackgroundColor(item.isFound() ? holder.itemView.getContext().getResources().getColor(R.color.colorAccent2) : Color.WHITE);
@@ -116,6 +117,7 @@ public class ItemRecyclerAdapter extends RecyclerView.Adapter<ItemRecyclerAdapte
 
     public interface OnItemListener {
         void onItemClick(int position);
+
         void onItemLongClick(int position);
     }
 }

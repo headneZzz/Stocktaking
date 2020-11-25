@@ -32,7 +32,7 @@ public class LocationRecyclerAdapter extends RecyclerView.Adapter<LocationRecycl
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.locationText.setText(R.string.location);
-        holder.locationText.append(String.valueOf(locations.get(position).getId()));
+        holder.locationText.append(" " + locations.get(position).getId());
         locations.get(position).setIconImage(holder.checkIcon);
     }
 

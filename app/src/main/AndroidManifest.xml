@@ -15,16 +15,29 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name="ru.gosarhro.stocktaking.activity.LoginActivity" />
-        <activity android:name="ru.gosarhro.stocktaking.activity.MainActivity">
+        <activity
+            android:name="ru.gosarhro.stocktaking.activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ru.gosarhro.stocktaking.activity.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ru.gosarhro.stocktaking.activity.LocationActivity" />
-        <activity android:name="ru.gosarhro.stocktaking.activity.ItemActivity" />
-        <activity android:name="ru.gosarhro.stocktaking.activity.QRCameraActivity" />
+        <activity
+            android:name="ru.gosarhro.stocktaking.activity.LocationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ru.gosarhro.stocktaking.activity.ItemActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ru.gosarhro.stocktaking.activity.QRCameraActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ru.gosarhro.stocktaking.activity.AddItemsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

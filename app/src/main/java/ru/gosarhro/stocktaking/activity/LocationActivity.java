@@ -28,7 +28,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import ru.gosarhro.stocktaking.R;
-import ru.gosarhro.stocktaking.fragment.NewItemDialogFragment;
 import ru.gosarhro.stocktaking.model.item.Item;
 import ru.gosarhro.stocktaking.model.item.ItemRecyclerAdapter;
 import ru.gosarhro.stocktaking.model.location.LocationStatus;
@@ -37,7 +36,7 @@ import static ru.gosarhro.stocktaking.activity.MainActivity.IS_FIRST_LAUNCH;
 import static ru.gosarhro.stocktaking.activity.MainActivity.PREF;
 
 public class LocationActivity extends AppCompatActivity
-        implements ItemRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener, NewItemDialogFragment.NewItemDialogListener {
+        implements ItemRecyclerAdapter.OnItemListener, SwipeRefreshLayout.OnRefreshListener{
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String currentCollectionName = "";
     SwipeRefreshLayout swipeRefreshLayout;
@@ -94,15 +93,14 @@ public class LocationActivity extends AppCompatActivity
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = menuItem -> {
+        Bundle bundle = new Bundle();
+        bundle.putString("currentCollectionName", currentCollectionName);
+        bundle.putInt("location", currentLocation);
         switch (menuItem.getItemId()) {
             case R.id.app_bar_add:
-                DialogFragment dialogFragment = new NewItemDialogFragment();
-                dialogFragment.show(getSupportFragmentManager(), "NewItem");
+                startActivity(new Intent(getApplicationContext(), AddItemsActivity.class).putExtras(bundle));
                 break;
             case R.id.app_bar_camera:
-                Bundle bundle = new Bundle();
-                bundle.putString("currentCollectionName", currentCollectionName);
-                bundle.putInt("location", currentLocation);
                 startActivity(new Intent(getApplicationContext(), QRCameraActivity.class).putExtras(bundle));
                 break;
             case R.id.app_bar_send:
@@ -195,44 +193,6 @@ public class LocationActivity extends AppCompatActivity
             }
         }
         return null;
-    }
-
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        EditText itemIdText = dialog.getDialog().findViewById(R.id.item_id_text);
-        String itemId = itemIdText.getText().toString();
-        Item itemInList = getItemByIdInList(itemId);
-        if (itemInList != null) {
-            itemInList.setFound(true);
-            recyclerView.smoothScrollToPosition(items.indexOf(itemInList));
-            Toast.makeText(getApplicationContext(), R.string.hint_item_already_in_list, Toast.LENGTH_SHORT).show();
-        } else if (itemId.equals("")) {
-            Toast.makeText(getApplicationContext(), R.string.error_empty_input, Toast.LENGTH_SHORT).show();
-        } else {
-            db.collection("current")
-                    .document("stocktaking")
-                    .collection(currentCollectionName)
-                    .document(itemId)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Item item = task.getResult().toObject(Item.class);
-                            if (item != null) {
-                                item.setFound(true);
-                                item.setLocation(currentLocation);
-                                items.add(item);
-                                Collections.sort(items, (o1, o2) -> o1.getId().compareTo(o2.getId()));
-                                adapter.getFilter().filter(null);
-                                dialog.dismiss();
-                                recyclerView.smoothScrollToPosition(items.indexOf(item));
-                            } else {
-                                Toast.makeText(getApplicationContext(), R.string.error_no_item_in_db, Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(getApplicationContext(), R.string.error_connect_to_db, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
     }
 
     @Override
