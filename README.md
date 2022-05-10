@@ -1,4 +1,4 @@
-# Finder
+# Stocktaking
 Android приложение для инвентаризации
 
 Для работы требуется Firebase и его конфиг файл google-services.json в папке app.
